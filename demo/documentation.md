@@ -14,5 +14,4 @@ With the calendar pattern you can turn any list of events into a day, week or mo
 | `min-zoom` | `1` | | Sets the minimum zoom level | integer |
 | `start-zoom` | `1` | | Sets the initial zoom level | integer |
 | `api-key` | | | Sets the API key | string |
-| `api-key` | | | Sets the API key | string |
 | `alt-text` | | | Alternate text for the map image | string |
