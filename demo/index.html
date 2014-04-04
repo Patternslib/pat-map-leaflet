@@ -4,7 +4,7 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <title>Demo</title>
         <link rel="stylesheet" href="http://www.patternslib.com/style/common.css" type="text/css">
-        <link rel="stylesheet" href="leaflet.css" type="text/css">
+        <link rel="stylesheet" href="css/leaflet.css" type="text/css">
     </head>
     <body>
         <section>
@@ -15,16 +15,17 @@
 
             <section class="demo">
                 <h2>Demo</h2>
-                <div class="pat-map-leaflet" data-pat-leaflet="
-                    url: //mijnoverstromingsrisico.hkv.nl/Data/Waterdiepte-03.kmz ;
-                    attribution: Map data &copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors ;
-                    max-zoom: 9;
-                    start-zoom: 9;
-                    min-zoom: 1;
-                    api-key: Fmjtd%7Cluub20uy2q%2Caw%3Do5-9urlq0;
-                    alt-text: Waterhoogte aanduiding in nederland;">
-                    
-                    <div class="column spotlight thumbnail" data-location="51.657862,5.697863">
+                <!-- http://mijnoverstromingsrisico.hkv.nl/Data/Waterdiepte-03.kmz -->
+                <div id="map1" class="pat-map-leaflet"
+                                data-pat-leaflet="url: 'http://mijnoverstromingsrisico.hkv.nl/Data/Waterdiepte-03.kmz' ;
+                                                  attribution: Kaartgegevens: © <a href='http://www.cbs.nl'>CBS</a>, <a href='http://www.kadaster.nl'>Kadaster</a>, <a href='http://openstreetmap.org'>OpenStreetMap</a>. ;
+                                                  max-zoom: 9;
+                                                  start-zoom: 3;
+                                                  min-zoom: 1;
+                                                  api-key: Fmjtd%7Cluub20uy2q%2Caw%3Do5-9urlq0;
+                                                  alt-text: Waterhoogte aanduiding in nederland;">
+
+                    <div class="maplocation" data-location="52.080956570675866, 4.306919574737549">
                          <h3>Zuid-Beveland</h3>
                         <p>
                             Overstromingskans: groter dan 1 op 100 per jaar
@@ -36,7 +37,8 @@
                             Verwachte schade: €38.000.000,- per jaar
                         </p>
                     </div>
-                    <div data-lng="%lng" data-lat="%lat">
+
+                    <!-- <div data-lng="%lng" data-lat="%lat">
                         <h3>Zuid-Beveland</h3>
                         <p>
                             Overstromingskans: groter dan 1 op 100 per jaar
@@ -143,7 +145,7 @@
                         <p>
                             Verwachte schade: €1.900.000,- per jaar
                         </p>
-                    </div>
+                    </div> -->
                 </div>
             </section>
 

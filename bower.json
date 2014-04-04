@@ -2,7 +2,7 @@
   "name": "pat-map-leaflet",
   "version": "1.0.0",
   "dependencies": {
-    "leaflet": "",
-    "imagesloaded": ""
+    "jquery": ">=1.5",
+    "leaflet": ""
   }
 }

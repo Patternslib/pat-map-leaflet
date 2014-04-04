@@ -1,8 +1,8 @@
-# Calendar
+# Leaflet
 
 ## Description
 
-With the calendar pattern you can turn any list of events into a day, week or month calendar. It's ideal for communicating upcoming events on a website.
+With the leaflet plugin you can create a leaflet map based on structured html with data-pat-leaflet attribute
 
 ## Documentation
 
