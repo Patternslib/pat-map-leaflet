@@ -92,7 +92,7 @@ define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patte
                 controller.init = function() {
                     controller.options = $.extend({}, $.leafletController.defaultOptions, options);
                     // data passed as  data attribute in the html has priority above passed by javascript
-                    controller.tileProviderUrlTemplate =  controller.options.url.replace("'","");
+                    controller.tileProviderUrlTemplate =  controller.options.url.replace(/'/g, '');
                     controller.maxZoom = controller.options.maxZoom;
                     controller.startZoom =  controller.options.startZoom;
                     controller.minZoom = controller.options.minZoom;
