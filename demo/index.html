@@ -16,11 +16,11 @@
             <section class="demo">
                 <h2>Demo</h2>
                 <!-- http://mijnoverstromingsrisico.hkv.nl/Data/Waterdiepte-03.kmz -->
-                <div id="map1" class="pat-map-leaflet"
-                                data-pat-leaflet="url: 'http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png' ;
+                <div id="map" class="pat-map-leaflet"
+                                data-pat-leaflet="url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ;
                                                   attribution: Kaartgegevens: © <a href='http://www.cbs.nl'>CBS</a>, <a href='http://www.kadaster.nl'>Kadaster</a>, <a href='http://openstreetmap.org'>OpenStreetMap</a>. ;
-                                                  max-zoom: 9;
-                                                  start-zoom: 3;
+                                                  max-zoom: 12;
+                                                  start-zoom: 7;
                                                   min-zoom: 1;
                                                   api-key: Fmjtd%7Cluub20uy2q%2Caw%3Do5-9urlq0;
                                                   alt-text: Waterhoogte aanduiding in nederland;">
@@ -153,7 +153,12 @@
                 <a href="documentation.md" class="pat-inject" data-pat-inject="source: ## Documentation::element; target: self::element; trigger: autoload">Documentation</a>
             </section>
         </section>
-        <script type="text/javascript" charset="utf-8" src="patterns.js"></script>
-        <script type="text/javascript" charset="utf-8" src="../dist/pat-map-leaflet.js"></script>
+        <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+        <script src="lib/proj4js-compressed.js"></script>
+        <script src="lib/proj4leaflet.js"></script>
+        <script src="script.js"></script>
+    <!--
+        <script type="text/javascript" charset="utf-8" src="patterns.js"></script> -->
+        <!--<script type="text/javascript" charset="utf-8" src="../dist/pat-map-leaflet.js"></script>-->
     </body>
 </html>

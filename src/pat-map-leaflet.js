@@ -36,15 +36,44 @@
  * the name of js must start with'leaflet' the image for the marker must be inside the image folder of the stylesheet
  */
 ;
-define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patterns, Parser) {
+
+// require.config({
+//     paths: {
+//         jquery: 'jquery',
+//         parser: 'patterns_dir/core/parser',
+//         registry: 'patterns_dir/core/registry',
+//         ajax: 'patterns_dir/pat/ajax',
+//         custom: 'custom'
+//     }
+// });
+
+// define(['registry', 'ajax', 'custom'], function (registry, ajax, custom) {
+//     console.log(registry);
+//     console.log(ajax);
+//     console.log(custom);
+//     console.log(registry.patterns.custom);
+// });
+
+
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery', 'leaflet','pat-registry','pat-parser'], function ($, L, patterns, Parser) {
+            return factory($, L, patterns, Parser);
+        });
+    } else {
+        factory(root.jQuery, root.L, root.patterns, root.patterns.Parser);
+    }
+}(this, function($,L,patterns, Parser) {
 
     var parser = new Parser('leaflet');
 
     parser.add_argument('url');
     parser.add_argument('attribution');
-    parser.add_argument('max-zoom', 9, [1,2,3,4,5,6,7,8,9]);
-    parser.add_argument('start-zoom', 9, [1,2,3,4,5,6,7,8,9]);
-    parser.add_argument('min-zoom', 1, [1,2,3,4,5,6,7,8]);
+    parser.add_argument('center');
+    parser.add_argument('max-zoom', 9, [1,2,3,4,5,6,7,8,9,10,11,12,13]);
+    parser.add_argument('start-zoom', 9, [1,2,3,4,5,6,7,8,9,10,11,12,13]);
+    parser.add_argument('min-zoom', 1, [1,2,3,4,5,6,7,8,9,10,11,12,13]);
     parser.add_argument('api-key','');
     parser.add_argument('alt-text', 'landkaart');
 
@@ -71,6 +100,14 @@ define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patte
         trigger: '.pat-map-leaflet',
 
         init: function($el, opts) {
+
+            var RD = new L.Proj.CRS.TMS(
+                'EPSG:28992',
+                '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs',
+                [-285401.92,22598.08,595401.9199999999,903401.9199999999], {
+                resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420]
+            });
+
 
             $.leafletController = function(el, options) {
                 // To avoid scope issues, use 'controller' instead of 'this'
@@ -153,6 +190,7 @@ define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patte
                  */
                 controller._createMap = function() {
                     var map = L.map(controller.el.id, {
+                        crs: RD,
                         continuousWorld: true,
                         zoom: controller.startZoom,
                         dragging: controller.options.dragging,
@@ -382,6 +420,14 @@ define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patte
                     });
                 };
 
+                // test RD coordinates
+                controller.map.on('click', function(e) {
+                    if (window.console) {
+                        var point = RD.projection.project(e.latlng);
+                        console.log("RD X: " + point.x + ", Y: " + point.y);
+                    }
+                });
+
 
                 // Run initializer
                 controller.init();
@@ -399,7 +445,7 @@ define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patte
                 listenToEvents: false,
                 url: 'http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
                 attribution: '&copy;<a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, Map data &copy; <a href="http://www.openstreetmap.org/copyright/" target="_blank">OpenStreetMap</a>',
-                startZoom: 12,
+                startZoom: 6,
                 dragging: true,
                 zoomControl: true,
                 scrollWheelZoom: true,
@@ -425,4 +471,4 @@ define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patte
 
     patterns.register(mapLeaflet);
     return mapLeaflet;
-});
+}));

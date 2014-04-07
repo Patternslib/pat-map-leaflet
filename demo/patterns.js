@@ -23039,15 +23039,26 @@ require(["pat/inject"]);
  * the name of js must start with'leaflet' the image for the marker must be inside the image folder of the stylesheet
  */
 ;
-define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patterns, Parser) {
+
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define('pat/mapLeaflet',['jquery','registry','core/parser'], function ($,patterns, Parser) {
+            return factory($, patterns, Parser);
+        });
+    } else {
+        factory(root.jQuery, root.patterns, root.patterns.Parser);
+    }
+}(this, function($,patterns, Parser) {
 
     var parser = new Parser('leaflet');
 
     parser.add_argument('url');
     parser.add_argument('attribution');
-    parser.add_argument('max-zoom', 9, [1,2,3,4,5,6,7,8,9]);
-    parser.add_argument('start-zoom', 9, [1,2,3,4,5,6,7,8,9]);
-    parser.add_argument('min-zoom', 1, [1,2,3,4,5,6,7,8]);
+    parser.add_argument('center');
+    parser.add_argument('max-zoom', 9, [1,2,3,4,5,6,7,8,9,10,11,12,13]);
+    parser.add_argument('start-zoom', 9, [1,2,3,4,5,6,7,8,9,10,11,12,13]);
+    parser.add_argument('min-zoom', 1, [1,2,3,4,5,6,7,8,9,10,11,12,13]);
     parser.add_argument('api-key','');
     parser.add_argument('alt-text', 'landkaart');
 
@@ -23173,8 +23184,7 @@ define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patte
                                     minZoom: controller.minZoom,
                                     subdomains: controller.subDomains,
                                     key: controller.apiKey,
-                                    detectRetina: true,
-                                    continuousWorld: true
+                                    detectRetina: true
                                 })
                             ]
                         });
@@ -23402,7 +23412,7 @@ define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patte
                 listenToEvents: false,
                 url: 'http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
                 attribution: '&copy;<a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, Map data &copy; <a href="http://www.openstreetmap.org/copyright/" target="_blank">OpenStreetMap</a>',
-                startZoom: 12,
+                startZoom: 6,
                 dragging: true,
                 zoomControl: true,
                 scrollWheelZoom: true,
@@ -23428,7 +23438,12 @@ define('pat/leaflet',['jquery','../registry','../core/parser'],function($, patte
 
     patterns.register(mapLeaflet);
     return mapLeaflet;
-});
+}));
 
-
-;require(['registry', 'pat/inject','pat/leaflet'], function(r){r.init();});
+// require.config({
+//     paths : {
+//             "proj4js" : "lib/proj4js-compressed.js",
+//             "proj4leaflet": "lib/proj4jsleaflet.js"
+//              }
+// });
+require(['registry', 'pat/inject','pat/mapLeaflet'], function(r){r.init();});

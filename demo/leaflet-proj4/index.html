@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <title>Demo</title>
+        <link rel="stylesheet" href="http://www.patternslib.com/style/common.css" type="text/css">
+        <link rel="stylesheet" href="css/leaflet.css" type="text/css">
+        <script data-main="js/main" src="js/require.js"></script>
+    </head>
+    <body>
+        <section>
+            <h1>Leaflet</h1>
+            <section class="description">
+                <a href="documentation.md" class="pat-inject" data-pat-inject="source: ## Description::element; target: self::element; trigger: autoload">Description</a>
+            </section>
+
+            <section class="demo">
+                <h2>Demo</h2>
+                <div id="map" class="pat-map-leaflet"
+                                data-pat-leaflet="url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ;
+                                                  attribution: Kaartgegevens: © <a href='http://www.cbs.nl'>CBS</a>, <a href='http://www.kadaster.nl'>Kadaster</a>, <a href='http://openstreetmap.org'>OpenStreetMap</a>. ;
+                                                  max-zoom: 12;
+                                                  start-zoom: 7;
+                                                  min-zoom: 1;
+                                                  api-key: Fmjtd%7Cluub20uy2q%2Caw%3Do5-9urlq0;
+                                                  alt-text: Waterhoogte aanduiding in nederland;">
+
+                    <div class="maplocation" data-location="52.080956570675866, 4.306919574737549">
+                         <h3>Zuid-Beveland</h3>
+                        <p>
+                            Overstromingskans: groter dan 1 op 100 per jaar
+                        </p>
+                        <p>
+                            Verwacht aantal slachtoffers: 10 per jaar
+                        </p>
+                        <p>
+                            Verwachte schade: €38.000.000,- per jaar
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="documentation">
+                <a href="documentation.md" class="pat-inject" data-pat-inject="source: ## Documentation::element; target: self::element; trigger: autoload">Documentation</a>
+            </section>
+        </section>
+    </body>
+</html>
