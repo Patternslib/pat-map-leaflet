@@ -15,14 +15,3 @@ With the leaflet plugin you can create a leaflet map based on structured html wi
 | `start-zoom` | `1` | | Sets the initial zoom level | integer |
 | `api-key` | | | Sets the API key | string |
 | `alt-text` | | | Alternate text for the map image | string |
-
-Creating a map is very simple: just add the `pat-map-leaflet` class to an
-element and add extra attributes.
-
-    <div id="map" class="pat-map-leaflet" data-pat-leaflet="url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ;
-    attribution: Kaartgegevens: <a href='http://www.kadaster.nl'>Kadaster</a>;
-    max-zoom: 12;
-    start-zoom: 7;
-    min-zoom: 1;
-    api-key: yourkeyhere;
-    alt-text: Waterhoogte aanduiding in nederland;"></div>

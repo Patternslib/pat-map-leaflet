@@ -9,9 +9,9 @@
                 ],
     "dependencies":{
         "jquery": ">=1.8",
-        "requirejs":null,
-        "leaflet":null,
-        "proj4leaflet":null
+        "requirejs": "",
+        "jquery-form": "3.46.0",
+         "logging": ""
     },
     "homepage": "https://gitub.com/Patternslib/pat-map-leaflet",
     "maintainers": [

@@ -1,0 +1,37 @@
+{
+  "name": "logging",
+  "version": "1.0.1",
+  "homepage": "https://github.com/Patternslib/logging",
+  "authors": [
+    "Wichert Akkerman <wichert@wiggy.net>"
+  ],
+  "description": "Minimal logging framework",
+  "main": "src/logging.js",
+  "keywords": [
+    "javascript",
+    "library",
+    "log",
+    "logging"
+  ],
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "grunt": "~0.3.17",
+    "grunt-jasmine-runner": "latest"
+  },
+  "_release": "1.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.1",
+    "commit": "9a1c8d0664a05971a21b46516e3e2f48c7fbb8b1"
+  },
+  "_source": "git://github.com/Patternslib/logging.git",
+  "_target": "*",
+  "_originalSource": "logging"
+}
