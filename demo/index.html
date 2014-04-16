@@ -19,7 +19,7 @@
 
         <section class="demo">
             <h2>Demo</h2>
-            <!-- <div id="map" class="pat-map-leaflet" data-pat-leaflet="url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ;
+             <div id="map" class="pat-map-leaflet" data-pat-leaflet="url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ;
                                                   attribution: Kaartgegevens: © <a href='http://www.cbs.nl'>CBS</a>, <a href='http://www.kadaster.nl'>Kadaster</a>, <a href='http://openstreetmap.org'>OpenStreetMap</a>. ;
                                                   max-zoom: 12;
                                                   start-zoom: 7;
@@ -36,17 +36,17 @@
                         Verwacht aantal slachtoffers: 10 per jaar
                     </p>
                     <p>
-                        Verwachte schade: €38.000.000,- per jaar
+                        Verwachte schade: &euro;38.000.000,- per jaar
                     </p>
                 </div>
-            </div> -->
+            </div>
 
             <div class="item card width-1" id="waterhoogte-in-omgeving">
                 <h2>Waterhoogte in jouw omgeving</h2>
 
                 <div class="content">
                     <p>Bekijk de maximale waterhoogte in jouw omgeving bij een overstroming.</p>
-                    <form action="scripts/views/postcoderespons.html#waterhoogte-in-omgeving" class="pat-inject">
+                    <form action="views/postcoderespons.html#map::element" class="pat-inject">
                         <fieldset>
                             <input class="postal-code" type="text" size="16" placeholder="Vul je postcode in">
                         </fieldset>
@@ -60,10 +60,8 @@
         </section>
     </section>
 
-    <script src="scripts/bundle.js"></script>
-    <!--
-    <script src="scripts/patterns.js"></script>
-     -->
+    <script data-main="main" src="../src/bower_components/requirejs/require.js"></script>
+    <!-- 
     <script>
         // $(document).on("pat-inject-content-loaded", "#in-geval-van-nood", function() {
          //     alert($(this).text());
@@ -73,8 +71,7 @@
             alert('loaded waterhoogte');
         });
     </script>
-    <!-- <script data-main="scripts/main.js" src="scripts/vendor/requirejs/require.js"></script> -->
-
+ -->
 </body>
 
 </html>
