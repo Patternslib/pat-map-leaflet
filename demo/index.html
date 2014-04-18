@@ -19,30 +19,18 @@
 
         <section class="demo">
             <h2>Demo</h2>
-             <div id="map" class="pat-map-leaflet" data-pat-leaflet="url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ;
-                                                  attribution: Kaartgegevens: © <a href='http://www.cbs.nl'>CBS</a>, <a href='http://www.kadaster.nl'>Kadaster</a>, <a href='http://openstreetmap.org'>OpenStreetMap</a>. ;
-                                                  max-zoom: 12;
-                                                  start-zoom: 7;
-                                                  min-zoom: 1;
-                                                  api-key: Fmjtd%7Cluub20uy2q%2Caw%3Do5-9urlq0;
-                                                  alt-text: Waterhoogte aanduiding in nederland;">
-
-                <div class="maplocation" data-location="52.080956570675866, 4.306919574737549">
-                    <h3>Zuid-Beveland</h3>
+            <!-- url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ; -->
+             <div id="map" class="pat-map-leaflet" data-pat-leaflet="config:lib/defaultlayers.xml; layers:BRT,AHN25M; zoom:3;">
+                <div class="maplocation" data-location="location:51.948009,4.8437067;Address:2871 GA Schoonhoven, Nederland;">
+                    <h3>Schoonhoven</h3>
                     <p>
-                        Overstromingskans: groter dan 1 op 100 per jaar
-                    </p>
-                    <p>
-                        Verwacht aantal slachtoffers: 10 per jaar
-                    </p>
-                    <p>
-                        Verwachte schade: &euro;38.000.000,- per jaar
+                        Overstromingsrisico: meer dan 5 meter.
                     </p>
                 </div>
             </div>
-
-            <div class="item card width-1" id="waterhoogte-in-omgeving">
+            <div class="item card width-1" id="waterhoogte-in-omgeving" data-latlong="52.3772085,4.6380039;3743AP Baarn, Nederland;">
                 <h2>Waterhoogte in jouw omgeving</h2>
+                <div></div>
 
                 <div class="content">
                     <p>Bekijk de maximale waterhoogte in jouw omgeving bij een overstroming.</p>
