@@ -15,7 +15,7 @@
     <title>Achtergrond</title>
     <tmsLayer>
       <title>BRT achtergrondkaart [tms]</title>
-      <url>{baseUrl}tms/</url>
+      <url>{baseUrl}tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png</url>
       <isBaseLayer>true</isBaseLayer>
       <opacity>1.0</opacity>
       <isTransparent>true</isTransparent>

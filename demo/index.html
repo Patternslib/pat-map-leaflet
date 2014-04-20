@@ -20,20 +20,31 @@
         <section class="demo">
             <h2>Demo</h2>
             <!-- url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ; -->
-             <div id="map" class="pat-map-leaflet" data-pat-leaflet="config:lib/defaultlayers.xml; layers:BRT,AHN25M; zoom:3;">
-                <div class="maplocation" data-location="location:51.948009,4.8437067;Address:2871 GA Schoonhoven, Nederland;">
-                    <h3>Schoonhoven</h3>
+             <div id="map" class="pat-map-leaflet" data-pat-leaflet="config:lib/defaultlayers.xml; layerNames:BRT achtergrondkaart [tms],AHN1 100m [wms];">
+                <div class="maplocation" data-pat-leaflet="location:51.948009,4.8437067;zoom:6;">
+                    <h3>2871 GA Schoonhoven, Nederland</h3>
                     <p>
                         Overstromingsrisico: meer dan 5 meter.
                     </p>
                 </div>
             </div>
-            <div class="item card width-1" id="waterhoogte-in-omgeving" data-latlong="52.3772085,4.6380039;3743AP Baarn, Nederland;">
+            <div class="item card width-1" id="waterhoogte-in-omgeving">
                 <h2>Waterhoogte in jouw omgeving</h2>
-                <div></div>
+                <div>
+                    <p>Deze kaart laat de maximale waterdiepte in de omgeving van de ingegeven postcode zien, die optreedt door een overstroming.</p>
+                </div>
 
                 <div class="content">
                     <p>Bekijk de maximale waterhoogte in jouw omgeving bij een overstroming.</p>
+                    <!-- <p>Op de kaart van Nederland ziet u de maximale waterdiepte door een overstroming. 
+                        We tonen de hoogste waterstand die kan optreden op elke locatie. 
+                        De informatie is afkomstig van vele overstromingsscenario's met verschillende gevolgen. 
+                        Voor deze scenario's is publieke informatie aangevuld met extra analyses.
+                        In buitendijkse gebieden is gebruik gemaakt van maatgevende hoogwaterstanden en de hoogte van het maaiveld. 
+                        In gebieden beschermd door dijken en duinen is de maximale waterstand getoond na een doorbraak uit zee, rivier of de boezem. Hiervoor hebben we gebruik gemaakt van de nationale overstromingsrisicokaart en van de ergst denkbare overstromingsscenario's.#Voor gebieden waar nog geen overstromingsscenario's beschikbaar zijn, hebben we een inschatting gemaakt op basis van de maaiveldhoogte. 
+                        Ook hebben we gekeken naar de gevolgen van doorbraken van regionale waterkeringen.
+                        Bij grote veranderingen in een gebied kunnen de gevolgen veranderen. 
+                        Het is dan ook mogelijk dat onderliggende scenario's worden geactualiseerd.</p> -->
                     <form action="views/postcoderespons.html#map::element" class="pat-inject">
                         <fieldset>
                             <input class="postal-code" type="text" size="16" placeholder="Vul je postcode in">

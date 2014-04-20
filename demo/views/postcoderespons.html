@@ -6,15 +6,9 @@
 <body>
     <section class="demo">
         <h2>Demo</h2>
-         <div id="map" class="pat-map-leaflet" data-pat-leaflet="url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ;
-                                              attribution: Kaartgegevens: © <a href='http://www.cbs.nl'>CBS</a>, <a href='http://www.kadaster.nl'>Kadaster</a>, <a href='http://openstreetmap.org'>OpenStreetMap</a>. ;
-                                              max-zoom: 12;
-                                              start-zoom: 9;
-                                              min-zoom: 1;
-                                              api-key: Fmjtd%7Cluub20uy2q%2Caw%3Do5-9urlq0;
-                                              alt-text: Waterhoogte aanduiding in nederland;">
-
-            <div class="maplocation" data-location="52.080956570675866, 4.306919574737549">
+        <!-- url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ; -->
+         <div id="map" class="pat-map-leaflet" data-pat-leaflet="config:lib/defaultlayers.xml; layers:BRT achtergrondkaart [tms],AHN1 25m [wms];">
+            <div class="maplocation" data-pat-leaflet="location:52.080956570675866,4.306919574737549;zoom:6;">
                 <h3>Lopiker- en Krimpenerwaard</h3>
                 <p>
                     Overstromingskans: groter dan 1 op 100 per jaar
@@ -27,12 +21,23 @@
                 </p>
             </div>
         </div>
-
         <div class="item card width-1" id="waterhoogte-in-omgeving">
             <h2>Waterhoogte in jouw omgeving</h2>
+            <div>
+                <p>Deze kaart laat de maximale waterdiepte in de omgeving van de ingegeven postcode zien, die optreedt door een overstroming.</p>
+            </div>
 
             <div class="content">
                 <p>Bekijk de maximale waterhoogte in jouw omgeving bij een overstroming.</p>
+                <!-- <p>Op de kaart van Nederland ziet u de maximale waterdiepte door een overstroming. 
+                    We tonen de hoogste waterstand die kan optreden op elke locatie. 
+                    De informatie is afkomstig van vele overstromingsscenario's met verschillende gevolgen. 
+                    Voor deze scenario's is publieke informatie aangevuld met extra analyses.
+                    In buitendijkse gebieden is gebruik gemaakt van maatgevende hoogwaterstanden en de hoogte van het maaiveld. 
+                    In gebieden beschermd door dijken en duinen is de maximale waterstand getoond na een doorbraak uit zee, rivier of de boezem. Hiervoor hebben we gebruik gemaakt van de nationale overstromingsrisicokaart en van de ergst denkbare overstromingsscenario's.#Voor gebieden waar nog geen overstromingsscenario's beschikbaar zijn, hebben we een inschatting gemaakt op basis van de maaiveldhoogte. 
+                    Ook hebben we gekeken naar de gevolgen van doorbraken van regionale waterkeringen.
+                    Bij grote veranderingen in een gebied kunnen de gevolgen veranderen. 
+                    Het is dan ook mogelijk dat onderliggende scenario's worden geactualiseerd.</p> -->
                 <form action="views/postcoderespons.html#map::element" class="pat-inject">
                     <fieldset>
                         <input class="postal-code" type="text" size="16" placeholder="Vul je postcode in">
