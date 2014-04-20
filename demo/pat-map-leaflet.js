@@ -36,11 +36,17 @@
  * the name of js must start with'leaflet' the image for the marker must be inside the image folder of the stylesheet
  */
 
-// de coördinaten in het Rijksdriehoeksstelsel (RD) 
+// USAGE FOR PROJ4 layers with LEAFLET
+// 
+// glosssarY: 
+// EPSG: European Petroleum Survey Group
+// RD: Rijksdriehoeksstelsel (RD) dutch crs
+// TMS: Tile map service
+// WMS: Web Map Service
+// crs: coordinate reference system
+// 
 // Spatialreference.org has a slightly different take on EPSG:28992:
 // +proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +no_defs
-// 
-// EPSG stands for : European Petroleum Survey Group
 // 
 // when using +proj=stere the roads are offset by about 100meters
 // These projection strings are both incomplete, because they do not take into account the datum shift that is used in the RD projection and can be approximated using the ‘towgs84′ parameter in PROJ4.
@@ -51,41 +57,7 @@
 // http://www.kadaster.nl/rijksdriehoeksmeting/rdnap.html
 // https://github.com/kartena/Proj4Leaflet
 // 
-// example calling api
-// proj4(fromProjection[, toProjection2, coordinates])
-// 
-// When all 3 arguments are given, the result is that the coordinates are transformed from projection1 to projection 2. And returned in the same format that they were given in.
-// var firstProjection = 'PROJCS["NAD83 / Massachusetts Mainland",GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["standard_parallel_1",42.68333333333333],PARAMETER["standard_parallel_2",41.71666666666667],PARAMETER["latitude_of_origin",41],PARAMETER["central_meridian",-71.5],PARAMETER["false_easting",200000],PARAMETER["false_northing",750000],AUTHORITY["EPSG","26986"],AXIS["X",EAST],AXIS["Y",NORTH]]';
-// var secondProjection = "+proj=gnom +lat_0=90 +lon_0=0 +x_0=6300000 +y_0=6300000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
-// 
-// proj4(firstProjection,secondProjection,[2,5]);
-// [-2690666.2977344505, 3662659.885459918]
-// 
-// example  conversion
-// proj4(firstProjection).forward([-71,41]);
-// -> [242075.00535055372, 750123.32090043]
-// proj4(firstProjection).inverse([242075.00535055372, 750123.32090043]);
-// -> [-71, 40.99999999999986]
-//the floating points to answer your question
-//
-// map.setView([38.0, 127.0], 0);
-// 
-// resolutions are the bounds of the different zoom levels
-// basic usage custom projection
-// var crs = new L.Proj.CRS('EPSG:3575',
-//         '+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs',
-//   {
-//     resolutions: [8192, 4096, 2048], // 3 example zoom level resolutions
-//   }
-// );
-
-// var map = L.map('map', {
-//   crs: crs,
-//   continuousWorld: true
-// });
-// L.tileLayer('http://tile.example.com/example/{z}/{x}/{y}.png').addTo(map);
-//
-// example:
+// USAGE EXAMPLE:
 // var RD = new L.Proj.CRS.TMS(
 //     'EPSG:28992', 
 //     '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs',
@@ -107,28 +79,21 @@
 //   center: new L.LatLng(52.15, 5.38),
 //   zoom: 3
 // });
-// // test RD coordinates
-// map.on('click', function(e) {
-//     if (window.console) {
-//         var point = RD.projection.project(e.latlng);
-//         console.log("RD X: " + point.x + ", Y: " + point.y);
-//     }
-// });
 // 
-// of via config voorbeeld:
-// var config = {
-// "zoom":1,
-// "baselayer":'BRT',
-// "loc":'142500, 470000',
-// "pdoklayers":'BRT,AHN1_100M_WMS',
-// "markersdef":'http://kaart.pdok.nl/api/js/pdok-markers.js',
-// "layersdef":'http://kaart.pdok.nl/api/js/pdok-layers.js',
-// "mloc":'140779.68,457957.76',
-// "titel":'kop van marker',
-// "tekst":'een tekst voor de marker',
-// "mt":'mt0'
-// };
+// USAGE EXAMPLE:
+// var crs = new L.Proj.CRS.TMS(...),
+//     map = new L.Map('map', {
+//         crs: crs,
+//         continuousWorld: true,
+//         worldCopyJump: false
+//     }),
 
+// map.addLayer(new L.Proj.TileLayer.TMS('http://{s}.my-tms-server/{z}/{x}/{y}.png', crs, {
+//     maxZoom: 17
+//     ,minZoom: 0
+//     ,continuousWorld: true
+//     ,attribution: attrib
+// }));
 
 
 (function (root, factory) {
@@ -236,17 +201,21 @@
                                 base.map = base._createMap();
 
                                 if(base.map){
-                                    base._addLayers();
+                                    base._addLayers(base.options.layers);
                                     //base._addMarkers();
+                                    //base._setView(base.options.map.center[0],base.options.map.center[1],base.options.map.zoom);
+                                    
+                                    base.map.whenReady(base._onWhenReady);
+                                    base.map.on('click', base._onMapClick);
+                                    base.map.on('focus', base._onMapFocus, base);
+                                    base.map.on('blur', base._onMapBlur, base);
+                                
                                 }
                                 
                                 // add the markers layer
                                 
                                 //base._setMarkers(base.markerdata.markers, base.map);
-                                //base.map.whenReady(base._onWhenReady);
-                                //base.map.on('click', base._onMapClick);
-                                //base.map.on('focus', base._onMapFocus, base);
-                                //base.map.on('blur', base._onMapBlur, base);
+                               
                                 base._onInitialized();
                             });
 
@@ -339,7 +308,7 @@
                         var projection = this.getTextContent('projection', xml);
                         var resolutions = this.getNumberArrayContent('resolutions', xml);
                         var maxExtent = this.getNumberArrayContent('maxExtent', xml);
-                        var center = this.getTextContent('center', xml);
+                        var center = this.getNumberArrayContent('center', xml);
                         var zoom = this.getNumberContent('zoom', xml);
 
                         var result = {
@@ -428,7 +397,8 @@
                                 };
                                 break;
                             }
-                            this.addMinMaxResolutions(config, node);
+                            //this.addMinMaxResolutions(config, node);
+                            this.addMinMaxZoom(config, node);
 
                             var layer = {title:title,url:url,config:config};
                             console.log(layer);
@@ -506,7 +476,7 @@
                         }
                         return result;
                     },
-                    addMinMaxResolutions:function (properties, $node) {
+                    addMinMaxZoom:function (properties, $node) {
                         var mapResolutions = base.options.map.resolutions;
 
                         var minResolution = this.getNumberContent('minResolution', $node);
@@ -514,11 +484,14 @@
                             minResolution = mapResolutions[mapResolutions.length - 1];
                         }
                         properties.minResolution = minResolution;
+                        properties.maxZoom = mapResolutions.indexOf(minResolution);
+
                         var maxResolution = this.getNumberContent('maxResolution', $node);
                         if (!maxResolution) {
                             maxResolution = mapResolutions[0];
                         }
                         properties.maxResolution = maxResolution;
+                        properties.minZoom = mapResolutions.indexOf(maxResolution);
                     }
                 };
 
@@ -576,37 +549,36 @@
                             var resolutions = base.options.map.resolutions;
                             
                             
-                            var crs = new L.Proj.CRS.TMS(
+                            var RD = new L.Proj.CRS.TMS(
                                         projection,
                                         base.options.PROJ4Projection,
                                         maxExtent,
                                         {resolutions: resolutions}
                                     );
 
-
                             var map = new L.Map('map', {
                               continuousWorld: true,
-                              crs: crs,
-                              layers: [
-                                    new L.TileLayer('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', {
-                                        tms: true,
-                                        minZoom: 2,
-                                        maxZoom: 13,
-                                        attribution: 'Kaartgegevens: © <a href="http://www.cbs.nl">CBS</a>, <a href="http://www.kadaster.nl">Kadaster</a>, <a href="http://openstreetmap.org">OpenStreetMap</a><span class="printhide">-auteurs (<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>).</span>',
-                                        continuousWorld: true
-                                    })
-                              ],
+                              crs: RD,
+                              // layers: [
+                              //   new L.TileLayer('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', {
+                              //       tms: true,
+                              //       minZoom: 2,
+                              //       maxZoom: 13,
+                              //       attribution: 'Kaartgegevens: © <a href="http://www.cbs.nl">CBS</a>, <a href="http://www.kadaster.nl">Kadaster</a>, <a href="http://openstreetmap.org">OpenStreetMap</a><span class="printhide">-auteurs (<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>).</span>',
+                              //       continuousWorld: true
+                              //   })
+                              // ],
                               center: new L.LatLng(52, 5.3),
                               zoom: 2
                             });
 
-
-                            // var map = L.Map('map', {
+                            // map.addLayer(new L.Proj.TileLayer.TMS('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', RD, {
+                            //     maxZoom: 17,
+                            //     minZoom: 0,
                             //     continuousWorld: true,
-                            //     crs: RD,
-                            //     center: new L.LatLng(52.15, 5.38),
-                            //     zoom: 2
-                            // });
+                            //     attribution: '(c) CC-BY Kadaster'
+                            // }));
+
                             return map;
 
                         } catch (e) {
@@ -653,56 +625,65 @@
                 * @param {array} An javascript array of layer names
                 */
                 base._addLayers = function(arrLayerNames){
+                    for(var i=0,y=arrLayerNames.length;i<y;i++){
+                        var layeroptions = arrLayerNames[i];
+                        switch(layeroptions.config.layerType){
+                            case 'tmsLayer' :
+                                 base.addTMS(layeroptions);
+                            break;
+                            case 'wmsLayer' :
+                                base.addWMS(layeroptions);
+                            break;
+                        }
+                    }
+                };
 
-                    // new L.TileLayer('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', {
-                    //     tms: true,
-                    //     minZoom: 2,
-                    //     maxZoom: 13,
-                    //     attribution: 'Kaartgegevens: © <a href="http://www.cbs.nl">CBS</a>, <a href="http://www.kadaster.nl">Kadaster</a>, <a href="http://openstreetmap.org">OpenStreetMap</a><span class="printhide">-auteurs (<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>).</span>',
-                    //     continuousWorld: true
-                    // }).addTo(base.map);
-
-                    // new L.TileLayer('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', {
-                    //         tms: true,
-                    //         minZoom: 3,
-                    //         maxZoom: 13,
-                    //         attribution: 'Kaartgegevens: © <a href="http://www.cbs.nl">CBS</a>, <a href="http://www.kadaster.nl">Kadaster</a>, <a href="http://openstreetmap.org">OpenStreetMap</a><span class="printhide">-auteurs (<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>).</span>',
-                    //         continuousWorld: true
-                    //     }).addTo(base.map);
-
-                    // base.map.setView([52.15, 5.38], 1);
-
-                    //  for(var i=0,y=arrLayerNames.length;i<y,i++){
-                    //     var layeroptions = arrLayerNames[i];
-
-
-                        
-
-                    //     layers.push(base.options.layers[i]);
-                    // }
+                /**
+                 * Api method to set the current position and zoom level
+                 * @param {float} lat   latitude
+                 * @param {float} lng   longitude
+                 * @param {int} zoom    zoom level
+                 */
+                base._setView = function(latitude,longitude,zoom){
+                    this.map.setView(new L.LatLng(latitude,longitude),zoom);
                 };
 
 
                 /**
                  * Add Tile map service on the map - TMS delivers tiles
                  */
-                base.addTMS = function(tms){
-
-                    // new L.TileLayer('http://i{s}.maps.daum-img.net/map/image/G03/i/1.20/L{z}/{y}/{x}.png', {
-                    //     maxZoom: 14,
-                    //     minZoom: 0,
-                    //     zoomReverse: true,
-                    //     subdomains: '0123',
-                    //     continuousWorld: true,
-                    //     attribution: 'ⓒ 2012 Daum',
-                    //     tms: true
-                    // }).addTo(map);
+                base.addTMS = function(tmsLayerOptions){
+                    // convert minMaxResolution to zoom levels
+                    
+                    this.map.addLayer(new L.TileLayer(tmsLayerOptions.url, {
+                        tms: true,
+                        minZoom: tmsLayerOptions.config.minZoom,
+                        maxZoom: tmsLayerOptions.config.maxZoom,
+                        attribution: tmsLayerOptions.config.attribution,
+                        continuousWorld: true
+                    }));
                 };
 
                 /**
                  *  add Web Map Service layers on the map - WMS delivers one image per request
                  */
                 base.addWMS = function(wms){
+                    // this.map.addLayer(L.tileLayer.wms('http://geodatatest.havochvatten.se/geoservices/ows', {
+                    //     layers: 'hav-fisketsgeografier:havet-ostersjons-delomraden',
+                    //     format: 'image/png',
+                    //     maxZoom: 14,
+                    //     minZoom: 0,
+                    //     continuousWorld: true,
+                    //     attribution: '&copy; <a href="https://www.havochvatten.se/kunskap-om-vara-vatten/kartor-och-geografisk-information/karttjanster.html">Havs- och vattenmyndigheten (Swedish Agency for Marine and Water Management)</a>'
+                    // }));
+
+                    // var nexrad = L.tileLayer.wms("http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi", {
+                    //     layers: 'nexrad-n0r-900913',
+                    //     format: 'image/png',
+                    //     transparent: true,
+                    //     attribution: "Weather data © 2012 IEM Nexrad"
+                    // });
+
                     // L.tileLayer.wms('http://geodatatest.havochvatten.se/geoservices/ows', {
                     //     layers: 'hav-fisketsgeografier:havet-ostersjons-delomraden',
                     //     format: 'image/png',
@@ -836,16 +817,6 @@
                 base._setZoomLevel = function(zoomlevel) {
                     this.map.zoomTo(zoomlevel);
                     return true;
-                };
-
-                /**
-                 * Api method to set the current position and zoom level 
-                 * @param {float} lng   longitude
-                 * @param {float} lat   latitude
-                 * @param {int} zoom    zoom level
-                 */
-                base._setView = function(lng,lat,zoom){
-                    this.map.setView(new L.LatLng(lng,lat),zoom);
                 };
 
                 /**
