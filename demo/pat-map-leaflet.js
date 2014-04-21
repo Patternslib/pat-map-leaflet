@@ -329,7 +329,6 @@
                         var nodes = [];
 
                         $.each(layerNames, function(index, layerName) {
-                            console.log(layerName);
                             nodes.push(
                                 $('title',xml).filter(function() {return $(this).text() === layerName;}).parent()
                             );
@@ -340,70 +339,56 @@
                         // * while for a WMS it is called 'layers' (mind the s on the end)
                         // * example one square of img: http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart@EPSG:28992@png/2/2/2.png
 
-                        for (var i = nodes.length - 1; i >= 0; i--) {
+                        for (var i=0,j = nodes.length ; i < j; i++) {
                             var node = nodes[i];
                             
                             // Generic
-                            var title = this.getTextContent('title', node);
-                            var url = this.getLayerUrlContent('url', node);
-                            var isBaseLayer = this.getBooleanContent('isBaseLayer', node);
-                            var opacity = this.getNumberContent('opacity', node);
-                            var isTransparent = this.getBooleanContent('isTransparent', node);
-                            var isVisible = this.getBooleanContent('isVisible', node);
-                            var isSingleTile=true,isAlpha=true, config={};
-                            var layerType = node[0].nodeName;
+                            var title = this.getTextContent('title', node),
+                                url = this.getLayerUrlContent('url', node),
+                                isBaseLayer = this.getBooleanContent('isBaseLayer', node),
+                                isVisible = this.getBooleanContent('isVisible', node),
+                                isSingleTile=this.getBooleanContent('isSingleTile', node),
+                                layerType = node[0].nodeName,
+                                opacity = this.getNumberContent('opacity', node),
+                                config = {
+                                    layerType:layerType,
+                                    baselayer:isBaseLayer,
+                                    singleTile:isSingleTile,
+                                    transparent:Boolean(parseInt(opacity,10)),
+                                    opacity:opacity,
+                                    visibility:isVisible,
+                                    continuousWorld:true
+                                };
 
                             switch(layerType) {
                             case 'tmsLayer':
                                 // TMS specific
                                 var layername = this.getTextContent('layername', node);
-                                var type = this.getTextContent('type', node);
                                 var bgColor = this.getTextContent('bgColor', node);
-                                isSingleTile = this.getBooleanContent('isSingleTile', node);
                                 var attribution = this.getTextContent('attribution', node);
-                                isAlpha = this.getBooleanContent('isAlpha', node);
-                                config = {
-                                    layerType:layerType,
-                                    isBaseLayer:isBaseLayer,
-                                    opacity:opacity,
-                                    transparent:isTransparent,
-                                    visibility:isVisible,
+                                var tmsconfig = {
+                                    tms:true,
                                     layername:layername,
-                                    type:type,
                                     bgcolor:bgColor,
-                                    singleTile:isSingleTile,
-                                    attribution:attribution,
-                                    alpha:isAlpha
+                                    attribution:attribution
                                 };
+                                $.extend(config,tmsconfig);
                                 break;
                             case 'wmsLayer':
                                 // WMS specific
                                 var layers = this.getTextContent('layers', node);
                                 var format = this.getTextContent('format', node);
-                                var featureInfoFormat = this.getTextContent('featureInfoFormat', node);
-                                isAlpha = this.getBooleanContent('isAlpha', node);
-                                isSingleTile = this.getBooleanContent('isSingleTile', node);
-                                config = {
-                                    layerType:layerType,
-                                    layers: layers,
-                                    format: format,
-                                    isBaseLayer:isBaseLayer,
-                                    singleTile:isSingleTile,
-                                    visibility:isVisible,
-                                    alpha:isAlpha,
-                                    opacity:opacity,
-                                    attribution:attribution,
-                                    featureInfoFormat:featureInfoFormat
+                                var wmsconfig = {
+                                    format:format,
+                                    layers:layers
                                 };
+                                $.extend(config,wmsconfig);
                                 break;
                             }
                             //this.addMinMaxResolutions(config, node);
                             this.addMinMaxZoom(config, node);
-
                             var layer = {title:title,url:url,config:config};
-                            console.log(layer);
                             result.push(layer);
-                            
                         }
                         return result;
                     },
@@ -627,12 +612,17 @@
                 base._addLayers = function(arrLayerNames){
                     for(var i=0,y=arrLayerNames.length;i<y;i++){
                         var layeroptions = arrLayerNames[i];
+
+
                         switch(layeroptions.config.layerType){
                             case 'tmsLayer' :
-                                 base.addTMS(layeroptions);
+                                 base._addTMS(layeroptions);
                             break;
                             case 'wmsLayer' :
-                                base.addWMS(layeroptions);
+                                base._addWMS(layeroptions);
+                            break;
+                            case 'imageLayer':
+                                base._addImageOverlay(layeroptions);
                             break;
                         }
                     }
@@ -652,22 +642,18 @@
                 /**
                  * Add Tile map service on the map - TMS delivers tiles
                  */
-                base.addTMS = function(tmsLayerOptions){
+                base._addTMS = function(layerOptions){
                     // convert minMaxResolution to zoom levels
-                    
-                    this.map.addLayer(new L.TileLayer(tmsLayerOptions.url, {
-                        tms: true,
-                        minZoom: tmsLayerOptions.config.minZoom,
-                        maxZoom: tmsLayerOptions.config.maxZoom,
-                        attribution: tmsLayerOptions.config.attribution,
-                        continuousWorld: true
-                    }));
+                    // basic L.tileLayer('http://{s}.somedomain.com/{foo}/{z}/{x}/{y}.png', {foo: 'bar'});
+                    this.map.addLayer(new L.TileLayer(layerOptions.url, layerOptions.config));
                 };
 
                 /**
                  *  add Web Map Service layers on the map - WMS delivers one image per request
                  */
-                base.addWMS = function(wms){
+                base._addWMS = function(layerOptions){
+                    this.map.addLayer(new L.TileLayer.WMS(layerOptions.url, layerOptions.config));
+                    
                     // this.map.addLayer(L.tileLayer.wms('http://geodatatest.havochvatten.se/geoservices/ows', {
                     //     layers: 'hav-fisketsgeografier:havet-ostersjons-delomraden',
                     //     format: 'image/png',
@@ -693,6 +679,21 @@
                     //     attribution: '&copy; <a href="https://www.havochvatten.se/kunskap-om-vara-vatten/kartor-och-geografisk-information/karttjanster.html">Havs- och vattenmyndigheten (Swedish Agency for Marine and Water Management)</a>'
                     // }).addTo(map);
                 };
+
+                /**
+                 * This function puts the flood layer on the map.
+                 */
+                base._addImageOverlay = function (layerOptions) {
+                   var map_object = {
+                       img_url: 'views/media/water_levels.png',
+                       img_bounds: new L.LatLngBounds(
+                          new L.LatLng(50.343832, 2.511731),
+                          new L.LatLng(53.876508, 7.751853)
+                       )
+                    }   
+                    var img_obj = { opacity: 0.5 }
+                    var overlay = new L.ImageOverlay(map_object.img_url, map_object.img_bounds, img_obj).addTo(base.map);
+                }
 
 
                 /**
@@ -799,15 +800,6 @@
                         this.map.removeLayer(marker);
                     });
                 };
-
-                /**
-                 * This function puts the flood layer on the map.
-                 */
-                base._putKmlLayer = function() {
-                   // var img_obj = { opacity: 0.5 };
-                   // var overlay = new L.ImageOverlay(base.kml_url, base.kml_bounds, img_obj).addTo(this.map);
-                };
-
 
                 /**
                  * Api method to set the current zoom level of this Api map
