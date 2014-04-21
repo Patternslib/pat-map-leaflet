@@ -49,16 +49,19 @@
         <featureInfoFormat>application/vnd.ogc.gml</featureInfoFormat>
         <isAlpha>true</isAlpha>
         <isSingleTile>true</isSingleTile>
+        <minResolution>0.42</minResolution>
       </wmsLayer>
       <imageLayer>
         <title>Overstromingsgevaar Nederland</title>
         <url>images/map/water_levels.png</url>
+        <format>image/jpeg</format>
         <isBaseLayer>false</isBaseLayer>
         <opacity>0.5</opacity>
         <isTransparent>true</isTransparent>
         <isVisible>true</isVisible>
         <isAlpha>true</isAlpha>
         <isSingleTile>true</isSingleTile>
+        <minResolution>0.42</minResolution>
       </imageLayer>
     </context>
   </contextFolder>

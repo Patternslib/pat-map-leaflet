@@ -206,9 +206,9 @@
                                     //base._setView(base.options.map.center[0],base.options.map.center[1],base.options.map.zoom);
                                     
                                     base.map.whenReady(base._onWhenReady);
-                                    base.map.on('click', base._onMapClick);
-                                    base.map.on('focus', base._onMapFocus, base);
-                                    base.map.on('blur', base._onMapBlur, base);
+                                    // base.map.on('click', base._onMapClick);
+                                    // base.map.on('focus', base._onMapFocus, base);
+                                    // base.map.on('blur', base._onMapBlur, base);
                                 
                                 }
                                 
@@ -542,8 +542,8 @@
                                     );
 
                             var map = new L.Map('map', {
-                              continuousWorld: true,
-                              crs: RD,
+                                continuousWorld: true,
+                                crs: RD,
                               // layers: [
                               //   new L.TileLayer('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', {
                               //       tms: true,
@@ -553,8 +553,8 @@
                               //       continuousWorld: true
                               //   })
                               // ],
-                              center: new L.LatLng(52, 5.3),
-                              zoom: 2
+                                center: new L.LatLng(52, 5.3),
+                                zoom: 2
                             });
 
                             // map.addLayer(new L.Proj.TileLayer.TMS('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', RD, {
@@ -615,14 +615,14 @@
 
 
                         switch(layeroptions.config.layerType){
-                            case 'tmsLayer' :
-                                 base._addTMS(layeroptions);
+                        case 'tmsLayer' :
+                            base._addTMS(layeroptions);
                             break;
-                            case 'wmsLayer' :
-                                base._addWMS(layeroptions);
+                        case 'wmsLayer' :
+                            base._addWMS(layeroptions);
                             break;
-                            case 'imageLayer':
-                                base._addImageOverlay(layeroptions);
+                        case 'imageLayer':
+                            base._addImageOverlay(layeroptions);
                             break;
                         }
                     }
@@ -643,7 +643,6 @@
                  * Add Tile map service on the map - TMS delivers tiles
                  */
                 base._addTMS = function(layerOptions){
-                    // convert minMaxResolution to zoom levels
                     // basic L.tileLayer('http://{s}.somedomain.com/{foo}/{z}/{x}/{y}.png', {foo: 'bar'});
                     this.map.addLayer(new L.TileLayer(layerOptions.url, layerOptions.config));
                 };
@@ -653,31 +652,6 @@
                  */
                 base._addWMS = function(layerOptions){
                     this.map.addLayer(new L.TileLayer.WMS(layerOptions.url, layerOptions.config));
-                    
-                    // this.map.addLayer(L.tileLayer.wms('http://geodatatest.havochvatten.se/geoservices/ows', {
-                    //     layers: 'hav-fisketsgeografier:havet-ostersjons-delomraden',
-                    //     format: 'image/png',
-                    //     maxZoom: 14,
-                    //     minZoom: 0,
-                    //     continuousWorld: true,
-                    //     attribution: '&copy; <a href="https://www.havochvatten.se/kunskap-om-vara-vatten/kartor-och-geografisk-information/karttjanster.html">Havs- och vattenmyndigheten (Swedish Agency for Marine and Water Management)</a>'
-                    // }));
-
-                    // var nexrad = L.tileLayer.wms("http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi", {
-                    //     layers: 'nexrad-n0r-900913',
-                    //     format: 'image/png',
-                    //     transparent: true,
-                    //     attribution: "Weather data © 2012 IEM Nexrad"
-                    // });
-
-                    // L.tileLayer.wms('http://geodatatest.havochvatten.se/geoservices/ows', {
-                    //     layers: 'hav-fisketsgeografier:havet-ostersjons-delomraden',
-                    //     format: 'image/png',
-                    //     maxZoom: 14,
-                    //     minZoom: 0,
-                    //     continuousWorld: true,
-                    //     attribution: '&copy; <a href="https://www.havochvatten.se/kunskap-om-vara-vatten/kartor-och-geografisk-information/karttjanster.html">Havs- och vattenmyndigheten (Swedish Agency for Marine and Water Management)</a>'
-                    // }).addTo(map);
                 };
 
                 /**
@@ -685,15 +659,18 @@
                  */
                 base._addImageOverlay = function (layerOptions) {
                    var map_object = {
-                       img_url: 'views/media/water_levels.png',
-                       img_bounds: new L.LatLngBounds(
-                          new L.LatLng(50.343832, 2.511731),
-                          new L.LatLng(53.876508, 7.751853)
-                       )
-                    }   
-                    var img_obj = { opacity: 0.5 }
-                    var overlay = new L.ImageOverlay(map_object.img_url, map_object.img_bounds, img_obj).addTo(base.map);
-                }
+                        img_url: 'views/media/water_levels.png',
+                        img_bounds: new L.LatLngBounds(
+                            new L.LatLng(50.343832, 2.511731),
+                            new L.LatLng(53.876508, 7.751853)
+                        )
+                    },
+                    img_obj = { opacity: 0.5 };
+                    
+                    this.map.addLayer(new L.ImageOverlay(map_object.img_url, map_object.img_bounds, img_obj));
+                    //this.map.fitBounds(map_object.img_bounds);
+                    //return new L.ImageOverlay(map_object.img_url, map_object.img_bounds, img_obj).addTo(base.map);
+                };
 
 
                 /**
