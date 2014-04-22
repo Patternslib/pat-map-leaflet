@@ -54,7 +54,7 @@
       <imageLayer>
         <title>Overstromingsgevaar Nederland</title>
         <url>images/map/water_levels.png</url>
-        <format>image/jpeg</format>
+        <format>image/png</format>
         <isBaseLayer>false</isBaseLayer>
         <opacity>0.5</opacity>
         <isTransparent>true</isTransparent>
