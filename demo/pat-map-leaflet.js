@@ -202,6 +202,8 @@
 
                                 if(base.map){
                                     base._addLayers(base.options.layers);
+
+                                    base._addLayerControls();
                                     //base._addMarkers();
                                     //base._setView(base.options.map.center[0],base.options.map.center[1],base.options.map.zoom);
                                     
@@ -350,11 +352,12 @@
                                 isSingleTile=this.getBooleanContent('isSingleTile', node),
                                 layerType = node[0].nodeName,
                                 opacity = this.getNumberContent('opacity', node),
+                                transparent = Boolean(parseInt(opacity,10)),
                                 config = {
                                     layerType:layerType,
                                     baselayer:isBaseLayer,
                                     singleTile:isSingleTile,
-                                    transparent:Boolean(parseInt(opacity,10)),
+                                    transparent:transparent,
                                     opacity:opacity,
                                     visibility:isVisible,
                                     continuousWorld:true
@@ -363,22 +366,26 @@
                             switch(layerType) {
                             case 'tmsLayer':
                                 // TMS specific
-                                var layername = this.getTextContent('layername', node);
-                                var bgColor = this.getTextContent('bgColor', node);
-                                var attribution = this.getTextContent('attribution', node);
-                                var tmsconfig = {
+                                var layername = this.getTextContent('layername', node),
+                                    type = this.getTextContent('type', node),
+                                    bgColor = this.getTextContent('bgColor', node),
+                                    attribution = this.getTextContent('attribution', node),
+                                    tmsconfig = {
                                     tms:true,
                                     layername:layername,
                                     bgcolor:bgColor,
+                                    type:type,
                                     attribution:attribution
                                 };
+
+                                url += '1.0.0/{layername}/{z}/{x}/{y}.{type}';
                                 $.extend(config,tmsconfig);
                                 break;
                             case 'wmsLayer':
                                 // WMS specific
-                                var layers = this.getTextContent('layers', node);
-                                var format = this.getTextContent('format', node);
-                                var wmsconfig = {
+                                var layers = this.getTextContent('layers', node),
+                                    format = this.getTextContent('format', node),
+                                    wmsconfig = {
                                     format:format,
                                     layers:layers
                                 };
@@ -626,6 +633,23 @@
                             break;
                         }
                     }
+                };
+
+                base._addLayerControls  = function(){
+                    var backgroundMaps = {};
+                    var overlayMaps = {};
+                    var i = 0; // get title from base.options.map.layers
+                    for (var lay in base.map._layers){
+                        var layer = base.map._layers[lay];
+                        if(layer.options.baselayer){
+                            backgroundMaps[base.options.layers[i].title] = layer;
+                        }
+                        else {
+                            overlayMaps[base.options.layers[i].title] = layer;
+                        }
+                        i+=1;
+                    }
+                    L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
                 };
 
                 /**

@@ -11,10 +11,11 @@
     <title>Achtergrond</title>
     <tmsLayer>
       <title>BRT achtergrondkaart [tms]</title>
-      <url>{baseUrl}tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png</url>
+      <url>{baseUrl}tms/</url>
       <isBaseLayer>true</isBaseLayer>
       <isVisible>true</isVisible>
       <opacity>1.0</opacity>
+      <type>png</type>
       <maxResolution>860.160</maxResolution>
       <minResolution>0.21</minResolution>
       <isSingleTile>false</isSingleTile>
@@ -22,14 +23,32 @@
       <attribution>(c) CC-BY Kadaster</attribution>
     </tmsLayer>
     <tmsLayer>
-      <title>Luchtfoto [tms]</title>
-      <url>http://geodata1.nationaalgeoregister.nl/luchtfoto/tms/1.0.0/luchtfoto/EPSG28992/{z}/{x}/{y}.jpg</url>
+      <title>BRT achtergrondkaart tijdelijk [tms]</title>
+      <url>{baseUrl}tms/</url>
       <isBaseLayer>true</isBaseLayer>
       <opacity>1.0</opacity>
+      <isTransparent>true</isTransparent>
+      <isVisible>false</isVisible>
+      <minResolution>0.21</minResolution>
+      <layername>brtachtergrondkaarttijdelijk@EPSG:28992@png</layername>
+      <type>png</type>
+      <bgColor>0xffffff</bgColor>
+      <isSingleTile>false</isSingleTile>
+      <isAlpha>true</isAlpha>
+      <attribution>(c) CC-BY Kadaster</attribution>
+    </tmsLayer>
+    <tmsLayer>
+      <title>Luchtfoto [tms]</title>
+      <url>http://geodata1.nationaalgeoregister.nl/luchtfoto/tms/</url>
+      <isBaseLayer>true</isBaseLayer>
+      <opacity>1.0</opacity>
+      <isTransparent>true</isTransparent>
       <isVisible>false</isVisible>
       <minResolution>0.42</minResolution>
       <layername>luchtfoto/EPSG28992</layername>
+      <bgColor>0xffffff</bgColor>
       <isSingleTile>false</isSingleTile>
+      <type>jpeg</type>
       <attribution>(c) CC-BY-NC</attribution>
     </tmsLayer>
   </context>
@@ -47,8 +66,8 @@
         <layers>ahn1_100m</layers>
         <format>image/png</format>
         <featureInfoFormat>application/vnd.ogc.gml</featureInfoFormat>
-        <isAlpha>true</isAlpha>
         <isSingleTile>true</isSingleTile>
+        <maxResolution>860.160</maxResolution>
         <minResolution>0.42</minResolution>
       </wmsLayer>
       <imageLayer>
@@ -59,8 +78,8 @@
         <opacity>0.5</opacity>
         <isTransparent>true</isTransparent>
         <isVisible>true</isVisible>
-        <isAlpha>true</isAlpha>
         <isSingleTile>true</isSingleTile>
+        <maxResolution>860.160</maxResolution>
         <minResolution>0.42</minResolution>
       </imageLayer>
     </context>
