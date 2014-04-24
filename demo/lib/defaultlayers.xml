@@ -21,6 +21,8 @@
       <isSingleTile>false</isSingleTile>
       <layername>brtachtergrondkaart@EPSG:28992@png</layername>
       <attribution>(c) CC-BY Kadaster</attribution>
+      <layerToggle>false</layerToggle>
+      <layerControl>true</layerControl>
     </tmsLayer>
     <tmsLayer>
       <title>BRT achtergrondkaart tijdelijk [tms]</title>
@@ -36,6 +38,8 @@
       <isSingleTile>false</isSingleTile>
       <isAlpha>true</isAlpha>
       <attribution>(c) CC-BY Kadaster</attribution>
+      <layerToggle>false</layerToggle>
+      <layerControl>true</layerControl>
     </tmsLayer>
     <tmsLayer>
       <title>Luchtfoto [tms]</title>
@@ -50,6 +54,8 @@
       <isSingleTile>false</isSingleTile>
       <type>jpeg</type>
       <attribution>(c) CC-BY-NC</attribution>
+      <layerToggle>false</layerToggle>
+      <layerControl>true</layerControl>
     </tmsLayer>
   </context>
   <contextFolder>
@@ -69,6 +75,8 @@
         <isSingleTile>true</isSingleTile>
         <maxResolution>860.160</maxResolution>
         <minResolution>0.42</minResolution>
+        <layerToggle>true</layerToggle>
+        <layerControl>false</layerControl>
       </wmsLayer>
       <imageLayer>
         <title>Overstromingsgevaar Nederland</title>
@@ -81,6 +89,8 @@
         <isSingleTile>true</isSingleTile>
         <maxResolution>860.160</maxResolution>
         <minResolution>0.42</minResolution>
+        <layerToggle>true</layerToggle>
+        <layerControl>false</layerControl>
       </imageLayer>
     </context>
   </contextFolder>

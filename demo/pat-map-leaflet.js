@@ -155,6 +155,8 @@
                 keyboardInteraction: true,
                 trackResize: true,
                 altText:'Kaart van Nederland',
+                hasLayerToggle: true,
+                hasLayerControl: true,
                 addAltText:false,
                 dataMarkers: null, //{{latlng:[lat,lng],title:'markertitle',popuptext:'Interdum et malesuada fames ac ante ipsum'},{latlng:[lat,lng],title:'markertitle',popuptext:'Interdum et malesuada fames ac ante ipsum'}}
                 //kmlUrl: 'images/map/water_levels.png',
@@ -183,6 +185,7 @@
                 base.init = function() {
                     // get information from dom node and extend the options with it
                     base.options = parser.parse(base.$el, options);
+                    base.options.id = base.el.id;
 
                     // collect the data from dom tree
                     base.markerdata = base._getMarkerData(base.dataMarkers);
@@ -202,8 +205,11 @@
 
                                 if(base.map){
                                     base._addLayers(base.options.layers);
+                                    
+                                    if(base.options.hasLayerControl){
+                                        base._addLayerControls();
+                                    }
 
-                                    base._addLayerControls();
                                     //base._addMarkers();
                                     //base._setView(base.options.map.center[0],base.options.map.center[1],base.options.map.zoom);
                                     
@@ -235,7 +241,8 @@
                         var $datatable = null;
                         data.markers = [];
                     
-                        $datatable =  base.$el.children();
+                        $datatable =  $('.maplocation',base.$el);
+
                         if($datatable.length === 0) {return;}
                         
                         // look in what structure the children are organised
@@ -312,17 +319,15 @@
                         var maxExtent = this.getNumberArrayContent('maxExtent', xml);
                         var center = this.getNumberArrayContent('center', xml);
                         var zoom = this.getNumberContent('zoom', xml);
-
                         var result = {
-                            title:title,
-                            baseUrl:baseUrl,
-                            projection:projection,
-                            resolutions:resolutions,
-                            maxExtent:maxExtent,
-                            center:center,
-                            zoom:zoom
-                        };
-
+                                title:title,
+                                baseUrl:baseUrl,
+                                projection:projection,
+                                resolutions:resolutions,
+                                maxExtent:maxExtent,
+                                center:center,
+                                zoom:zoom
+                            };
                         return result;
                     },
                     parseLayers : function (xml) {
@@ -345,15 +350,17 @@
                             var node = nodes[i];
                             
                             // Generic
-                            var title = this.getTextContent('title', node),
-                                url = this.getLayerUrlContent('url', node),
-                                isBaseLayer = this.getBooleanContent('isBaseLayer', node),
-                                isVisible = this.getBooleanContent('isVisible', node),
-                                isSingleTile=this.getBooleanContent('isSingleTile', node),
-                                layerType = node[0].nodeName,
-                                opacity = this.getNumberContent('opacity', node),
-                                transparent = Boolean(parseInt(opacity,10)),
-                                config = {
+                            var title = this.getTextContent('title', node);
+                            var url = this.getLayerUrlContent('url', node);
+                            var isBaseLayer = this.getBooleanContent('isBaseLayer', node);
+                            var isVisible = this.getBooleanContent('isVisible', node);
+                            var isSingleTile=this.getBooleanContent('isSingleTile', node);
+                            var layerType = node[0].nodeName;
+                            var opacity = this.getNumberContent('opacity', node);
+                            var transparent = Boolean(parseInt(opacity,10));
+                            var layerToggle = this.getBooleanContent('layerToggle', node);
+                            var layerControl = this.getBooleanContent('layerControl', node);
+                            var config = {
                                     layerType:layerType,
                                     baselayer:isBaseLayer,
                                     singleTile:isSingleTile,
@@ -394,7 +401,7 @@
                             }
                             //this.addMinMaxResolutions(config, node);
                             this.addMinMaxZoom(config, node);
-                            var layer = {title:title,url:url,config:config};
+                            var layer = {title:title,url:url,layerToggle:layerToggle,layerControl:layerControl,config:config};
                             result.push(layer);
                         }
                         return result;
@@ -537,10 +544,7 @@
                     try {
                             var projection = base.options.map.projection; //base.options.contextCollection.find('projection').text();
                             var maxExtent = base.options.map.maxExtent; //base.options.contextCollection.find('maxExtent').text().split(',');
-                            // for modern browsers var resolutions = base.options.contextCollection.find('resolutions').text().split(',').map(Number);
                             var resolutions = base.options.map.resolutions;
-                            
-                            
                             var RD = new L.Proj.CRS.TMS(
                                         projection,
                                         base.options.PROJ4Projection,
@@ -635,22 +639,67 @@
                     }
                 };
 
+                /**
+                 * display layer controls on the map
+                 */
                 base._addLayerControls  = function(){
                     var backgroundMaps = {};
                     var overlayMaps = {};
                     var i = 0; // get title from base.options.map.layers
                     for (var lay in base.map._layers){
                         var layer = base.map._layers[lay];
-                        if(layer.options.baselayer){
-                            backgroundMaps[base.options.layers[i].title] = layer;
-                        }
-                        else {
-                            overlayMaps[base.options.layers[i].title] = layer;
+
+                        // check if layer must be included in layer controller
+                        if(base.options.layers[i].layerControl){
+                            if(layer.options.baselayer){
+                                backgroundMaps[base.options.layers[i].title] = layer;
+                            }
+                            else {
+                                overlayMaps[base.options.layers[i].title] = layer;
+                            }
                         }
                         i+=1;
                     }
+                    
                     L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
                 };
+
+                /**
+                 * Add an external toggle other then default layer controls for switching layers on and off
+                 * @param {L.layer} lay layer to switch
+                 */
+                base._addLayerToggle =  function(layer, name){
+
+                    var $ui = $('ul.ui-control',base.$el);
+                    if($ui){
+                        // Create a simple layer switcher that toggles layers on and off.
+                        //var item = document.createElement('li');
+                        //var link = document.createElement('a');
+                        var $listItem = $('<li></li>');
+                        var $link = $('<a class="active" tabindex="0">'+name+'</a>');
+                        $link.on('click',function(e) {
+                            e.preventDefault();
+
+                            if (base.map.hasLayer(layer)) {
+                                base.map.removeLayer(layer);
+                                this.className = '';
+                            } else {
+                                base.map.addLayer(layer);
+                                this.className = 'active';
+                            }
+                        });
+                        $ui.append($listItem.append($link));
+                    }
+                };
+
+                // base.showLayer= function(layername){
+                //      map.getPane(layername).style.display = 'none';
+
+                // }
+                // base.hideLayer = function(layer){
+                //      map.getPane(layername).style.display = '';
+                // }
+
 
                 /**
                  * Api method to set the current position and zoom level
@@ -659,41 +708,62 @@
                  * @param {int} zoom    zoom level
                  */
                 base._setView = function(latitude,longitude,zoom){
-                    this.map.setView(new L.LatLng(latitude,longitude),zoom);
+                    base.map.setView(new L.LatLng(latitude,longitude),zoom);
                 };
 
+                base.getBounds = function(){
+                    var bounds = base.map.getBounds();
+                        //southWest = bounds.getSouthWest(),
+                        //northEast = bounds.getNorthEast(),
+                        //lngSpan = northEast.lng - southWest.lng,
+                        //latSpan = northEast.lat - southWest.lat;
+                    return bounds;
+                };
 
                 /**
                  * Add Tile map service on the map - TMS delivers tiles
                  */
                 base._addTMS = function(layerOptions){
                     // basic L.tileLayer('http://{s}.somedomain.com/{foo}/{z}/{x}/{y}.png', {foo: 'bar'});
-                    this.map.addLayer(new L.TileLayer(layerOptions.url, layerOptions.config));
+                    base.map.addLayer(new L.TileLayer(layerOptions.url, layerOptions.config));
                 };
 
                 /**
                  *  add Web Map Service layers on the map - WMS delivers one image per request
                  */
                 base._addWMS = function(layerOptions){
-                    this.map.addLayer(new L.TileLayer.WMS(layerOptions.url, layerOptions.config));
+                    var layer = new L.TileLayer.WMS(layerOptions.url, layerOptions.config);
+                    base.map.addLayer(layer);
+
+                    if(base.options.hasLayerToggle && layerOptions.layerToggle){
+                        base._addLayerToggle(layer,layerOptions.title);
+                    }
                 };
 
                 /**
                  * This function puts the flood layer on the map.
                  */
                 base._addImageOverlay = function (layerOptions) {
-                   var map_object = {
+                    // example
+                    var map_object = {
                         img_url: 'views/media/water_levels.png',
-                        img_bounds: new L.LatLngBounds(
-                            new L.LatLng(50.343832, 2.511731),
-                            new L.LatLng(53.876508, 7.751853)
-                        )
+                        img_bounds: base.getBounds()
+                        // img_bounds: new L.LatLngBounds(
+                        //     new L.LatLng(50.343832, 2.511731),
+                        //     new L.LatLng(53.876508, 7.751853)
+                        // )
                     },
                     img_obj = { opacity: 0.5 };
                     
-                    this.map.addLayer(new L.ImageOverlay(map_object.img_url, map_object.img_bounds, img_obj));
+                    var layer = new L.ImageOverlay(map_object.img_url, map_object.img_bounds, img_obj);
+                    this.map.addLayer(layer);
                     //this.map.fitBounds(map_object.img_bounds);
                     //return new L.ImageOverlay(map_object.img_url, map_object.img_bounds, img_obj).addTo(base.map);
+                    
+                    if(base.options.hasLayerToggle && layerOptions.layerToggle){
+                        base._addLayerToggle(layer,layerOptions.title);
+                    }
+
                 };
 
 
