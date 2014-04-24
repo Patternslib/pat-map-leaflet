@@ -23,6 +23,7 @@
       <attribution>(c) CC-BY Kadaster</attribution>
       <layerToggle>false</layerToggle>
       <layerControl>true</layerControl>
+      <isAlpha>true</isAlpha>
     </tmsLayer>
     <tmsLayer>
       <title>BRT achtergrondkaart tijdelijk [tms]</title>

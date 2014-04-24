@@ -660,7 +660,7 @@
                         }
                         i+=1;
                     }
-                    
+
                     L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
                 };
 
@@ -744,14 +744,15 @@
                  * This function puts the flood layer on the map.
                  */
                 base._addImageOverlay = function (layerOptions) {
+                    console.log(base.getBounds());
+
                     // example
                     var map_object = {
                         img_url: 'views/media/water_levels.png',
-                        img_bounds: base.getBounds()
-                        // img_bounds: new L.LatLngBounds(
-                        //     new L.LatLng(50.343832, 2.511731),
-                        //     new L.LatLng(53.876508, 7.751853)
-                        // )
+                        img_bounds: new L.LatLngBounds(
+                            new L.LatLng(50.343832, 2.28),
+                            new L.LatLng(53.876508, 7.751853)
+                        )
                     },
                     img_obj = { opacity: 0.5 };
                     
