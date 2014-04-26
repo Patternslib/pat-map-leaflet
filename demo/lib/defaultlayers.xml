@@ -32,7 +32,7 @@
       <isBaseLayer>true</isBaseLayer>
       <opacity>1.0</opacity>
       <isTransparent>true</isTransparent>
-      <isVisible>false</isVisible>
+      <isVisible>true</isVisible>
       <minResolution>0.21</minResolution>
       <layername>brtachtergrondkaarttijdelijk@EPSG:28992@png</layername>
       <type>png</type>

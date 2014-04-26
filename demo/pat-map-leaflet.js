@@ -153,6 +153,10 @@
                     // get information from dom node and extend the options with it
                     base.options = $.extend(options,parser.parse(base.$el)); //parser.parse(base.$el, options);
                     base.options.id = base.el.id;
+                     // define the layers to show
+                    base.layers = [];
+                     // defined map object
+                    base.map = null;
 
                     // collect the data from dom tree
                     base.markerdata = base._getMarkerData(base.dataMarkers);
@@ -171,13 +175,16 @@
                                 base.map = base._createMap();
 
                                 if(base.map){
+                                    // add the layers on the map
                                     base._addLayers(base.options.layers);
                                     
+                                    // set layer control for all layers
                                     if(base.options.hasLayerControl){
                                         base._addLayerControls();
                                     }
 
-                                    if(base.markerdata.markers.length){
+                                    // add markers
+                                    if(base.markerdata){
                                         base._addMarkers(base.markerdata.markers);
                                     }
 
@@ -188,12 +195,14 @@
 
                                     base.map.whenReady(base._onWhenReady);
 
+                                    // add click handler
                                     if(base.options.debug){
                                         base.map.on('click', base._onMapClick);
                                     }
 
-                                    // base.map.on('focus', base._onMapFocus, base);
-                                    // base.map.on('blur', base._onMapBlur, base);
+                                    // add focus and blur handlers
+                                    base.map.on('focus', base._onMapFocus, base);
+                                    base.map.on('blur', base._onMapBlur, base);
                                 
                                 }
                                 
@@ -577,23 +586,26 @@
                 base._addLayerControls  = function(){
                     var backgroundMaps = {};
                     var overlayMaps = {};
-                    var i = 0; // get title from base.options.map.layers
-                    for (var lay in base.map._layers){
-                        var layer = base.map._layers[lay];
-
+                    var layercontrol = 0;
+                    for (var i=0,j=base.layers.length;i<j;i++){
+                        var layer = base.layers[i].layer;
+                        var title = base.layers[i].title;
                         // check if layer must be included in layer controller
-                        if(base.options.layers[i].layerControl){
+                        if(base.layers[i].layerControl){
+                            layercontrol+=1;
+                            
                             if(layer.options.baselayer){
-                                backgroundMaps[base.options.layers[i].title] = layer;
+                                backgroundMaps[title] = layer;
                             }
                             else {
-                                overlayMaps[base.options.layers[i].title] = layer;
+                                overlayMaps[title] = layer;
                             }
                         }
-                        i+=1;
                     }
-
-                    L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
+                    // only show layer control if there is something to control
+                    if(layercontrol>1){
+                        L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
+                    }
                 };
 
                 /**
@@ -653,23 +665,46 @@
                     return bounds;
                 };
 
+                base._setLayer = function(layer,layerOptions){
+                    var obj = {};
+                    obj.layer = layer;
+                    obj.title = layerOptions.title;
+                    obj.layerControl = layerOptions.layerControl;
+                    base.layers.push(obj);
+                    return obj;
+                };
+
                 /**
                  * Add Tile map service on the map - TMS delivers tiles
                  */
                 base._addTMS = function(layerOptions){
-                    // basic L.tileLayer('http://{s}.somedomain.com/{foo}/{z}/{x}/{y}.png', {foo: 'bar'});
-                    base.map.addLayer(new L.TileLayer(layerOptions.url, layerOptions.config));
+                    //base.map.addLayer(new L.TileLayer(layerOptions.url, layerOptions.config));
+
+                    //create layer
+                    var LLayer = new L.TileLayer(layerOptions.url, layerOptions.config);
+                    base._setLayer(LLayer,layerOptions);
+                    
+                    // only add isVisible layer the rest in under the controls
+                    
+                    if(layerOptions.config.visibility){
+                        base.map.addLayer(LLayer);
+                    }
+
                 };
 
                 /**
                  *  add Web Map Service layers on the map - WMS delivers one image per request
                  */
                 base._addWMS = function(layerOptions){
-                    var layer = new L.TileLayer.WMS(layerOptions.url, layerOptions.config);
-                    base.map.addLayer(layer);
+                    var LLayer = new L.TileLayer.WMS(layerOptions.url, layerOptions.config);
+                    base._setLayer(LLayer,layerOptions);
+
+                    //if(layerOptions.config.visibility){
+                        base.map.addLayer(LLayer);
+                    //}
 
                     if(base.options.hasLayerToggle && layerOptions.layerToggle){
-                        base._addLayerToggle(layer,layerOptions.title);
+                        base._addLayerToggle(LLayer,layerOptions.title);
                     }
                 };
 
