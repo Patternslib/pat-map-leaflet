@@ -24,6 +24,7 @@
       <layerToggle>false</layerToggle>
       <layerControl>true</layerControl>
       <isAlpha>true</isAlpha>
+      <isTransparent>true</isTransparent>
     </tmsLayer>
     <tmsLayer>
       <title>BRT achtergrondkaart tijdelijk [tms]</title>
@@ -63,6 +64,37 @@
     <title>Overlay</title>
     <context>
       <title>Actueel Hoogtebestand Nederland (AHN1)</title>
+      <wmsLayer>
+        <title>AHN2 5m [wms]</title>
+        <url>{baseUrl}ahn2/wms?</url>
+        <isBaseLayer>false</isBaseLayer>
+        <opacity>1.0</opacity>
+        <isTransparent>true</isTransparent>
+        <isVisible>false</isVisible>
+        <layers>ahn2_5m</layers>
+        <format>image/png</format>
+        <featureInfoFormat>application/vnd.ogc.gml</featureInfoFormat>
+        <isAlpha>true</isAlpha>
+        <isSingleTile>true</isSingleTile>
+        <layerToggle>true</layerToggle>
+        <layerControl>false</layerControl>
+      </wmsLayer>
+      <wmsLayer>
+        <title>AHN2 0.5m ruw [wms]</title>
+        <url>{baseUrl}ahn2/wms?</url>
+        <isBaseLayer>false</isBaseLayer>
+        <opacity>1.0</opacity>
+        <isTransparent>true</isTransparent>
+        <isVisible>false</isVisible>
+        <maxResolution>3.36</maxResolution>
+        <layers>ahn2_05m_ruw</layers>
+        <format>image/png</format>
+        <featureInfoFormat>application/vnd.ogc.gml</featureInfoFormat>
+        <isAlpha>true</isAlpha>
+        <isSingleTile>true</isSingleTile>
+        <layerToggle>true</layerToggle>
+        <layerControl>false</layerControl>
+      </wmsLayer>
       <wmsLayer>
         <title>AHN1 100m [wms]</title>
         <url>{baseUrl}ahn1/wms?</url>

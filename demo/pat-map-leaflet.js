@@ -56,44 +56,7 @@
 // src: http://oegeo.wordpress.com/2008/05/20/note-to-self-the-one-and-only-rd-projection-string/
 // http://www.kadaster.nl/rijksdriehoeksmeting/rdnap.html
 // https://github.com/kartena/Proj4Leaflet
-// 
-// USAGE EXAMPLE:
-// var RD = new L.Proj.CRS.TMS(
-//     'EPSG:28992', 
-//     '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs',
-//     [-285401.92,22598.08,595401.9199999999,903401.9199999999], 
-//     {resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420]}
-// );
-// var map = new L.Map('map', {
-//   continuousWorld: true,
-//   crs: RD,
-//   layers: [
-//     new L.TileLayer('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', {
-//         tms: true,
-//         minZoom: 3,
-//         maxZoom: 13,
-//         attribution: 'Kaartgegevens: © <a href="http://www.cbs.nl">CBS</a>, <a href="http://www.kadaster.nl">Kadaster</a>, <a href="http://openstreetmap.org">OpenStreetMap</a><span class="printhide">-auteurs (<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>).</span>',
-//         continuousWorld: true
-//     })
-//   ],
-//   center: new L.LatLng(52.15, 5.38),
-//   zoom: 3
-// });
-// 
-// USAGE EXAMPLE:
-// var crs = new L.Proj.CRS.TMS(...),
-//     map = new L.Map('map', {
-//         crs: crs,
-//         continuousWorld: true,
-//         worldCopyJump: false
-//     }),
-
-// map.addLayer(new L.Proj.TileLayer.TMS('http://{s}.my-tms-server/{z}/{x}/{y}.png', crs, {
-//     maxZoom: 17
-//     ,minZoom: 0
-//     ,continuousWorld: true
-//     ,attribution: attrib
-// }));
+// add #debug or #currentlocation to the url to test location
 
 
 (function (root, factory) {
@@ -111,6 +74,7 @@
 
     parser.add_argument('config');
     parser.add_argument('layerNames');
+    parser.add_argument('currentLocation');
 
     //overwrite imagePathFunction to look for path next to csspath not js path
     L.Icon.Default.imagePath = (function() {
@@ -137,7 +101,9 @@
         init: function($el, options) {
             // http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png
             
+
             var defaultOptions = {
+                debug: (window.location.hash.indexOf('debug') > -1),
                 id: 'map',
                 PROJ4Projection:'+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs',
                 zoom: 2,
@@ -156,6 +122,7 @@
                 trackResize: true,
                 altText:'Kaart van Nederland',
                 hasLayerToggle: true,
+                currentLocation: (window.location.hash.indexOf('currentlocation') > -1),
                 hasLayerControl: true,
                 addAltText:false,
                 dataMarkers: null, //{{latlng:[lat,lng],title:'markertitle',popuptext:'Interdum et malesuada fames ac ante ipsum'},{latlng:[lat,lng],title:'markertitle',popuptext:'Interdum et malesuada fames ac ante ipsum'}}
@@ -184,7 +151,7 @@
                  */
                 base.init = function() {
                     // get information from dom node and extend the options with it
-                    base.options = parser.parse(base.$el, options);
+                    base.options = $.extend(options,parser.parse(base.$el)); //parser.parse(base.$el, options);
                     base.options.id = base.el.id;
 
                     // collect the data from dom tree
@@ -210,11 +177,21 @@
                                         base._addLayerControls();
                                     }
 
-                                    //base._addMarkers();
+                                    if(base.markerdata.markers.length){
+                                        base._addMarkers(base.markerdata.markers);
+                                    }
+
                                     //base._setView(base.options.map.center[0],base.options.map.center[1],base.options.map.zoom);
-                                    
+                                    if(base.options.currentLocation){
+                                        base.setCurrentLocation();
+                                    }
+
                                     base.map.whenReady(base._onWhenReady);
-                                    // base.map.on('click', base._onMapClick);
+
+                                    if(base.options.debug){
+                                        base.map.on('click', base._onMapClick);
+                                    }
+
                                     // base.map.on('focus', base._onMapFocus, base);
                                     // base.map.on('blur', base._onMapBlur, base);
                                 
@@ -319,6 +296,7 @@
                         var maxExtent = this.getNumberArrayContent('maxExtent', xml);
                         var center = this.getNumberArrayContent('center', xml);
                         var zoom = this.getNumberContent('zoom', xml);
+
                         var result = {
                                 title:title,
                                 baseUrl:baseUrl,
@@ -337,7 +315,9 @@
 
                         $.each(layerNames, function(index, layerName) {
                             nodes.push(
-                                $('title',xml).filter(function() {return $(this).text() === layerName;}).parent()
+                                $('title',xml).filter(function() {
+                                    return $(this).text() === layerName;
+                                }).parent()
                             );
                         });
 
@@ -357,9 +337,11 @@
                             var isSingleTile=this.getBooleanContent('isSingleTile', node);
                             var layerType = node[0].nodeName;
                             var opacity = this.getNumberContent('opacity', node);
-                            var transparent = Boolean(parseInt(opacity,10));
+                            var alpha = this.getBooleanContent('isAlpha', node);
+                            var transparent = this.getBooleanContent('isTransparent', node);
                             var layerToggle = this.getBooleanContent('layerToggle', node);
                             var layerControl = this.getBooleanContent('layerControl', node);
+                           
                             var config = {
                                     layerType:layerType,
                                     baselayer:isBaseLayer,
@@ -367,7 +349,8 @@
                                     transparent:transparent,
                                     opacity:opacity,
                                     visibility:isVisible,
-                                    continuousWorld:true
+                                    continuousWorld:true,
+                                    alpha:alpha
                                 };
 
                             switch(layerType) {
@@ -555,66 +538,15 @@
                             var map = new L.Map('map', {
                                 continuousWorld: true,
                                 crs: RD,
-                              // layers: [
-                              //   new L.TileLayer('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', {
-                              //       tms: true,
-                              //       minZoom: 2,
-                              //       maxZoom: 13,
-                              //       attribution: 'Kaartgegevens: © <a href="http://www.cbs.nl">CBS</a>, <a href="http://www.kadaster.nl">Kadaster</a>, <a href="http://openstreetmap.org">OpenStreetMap</a><span class="printhide">-auteurs (<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>).</span>',
-                              //       continuousWorld: true
-                              //   })
-                              // ],
                                 center: new L.LatLng(52, 5.3),
                                 zoom: 2
                             });
-
-                            // map.addLayer(new L.Proj.TileLayer.TMS('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', RD, {
-                            //     maxZoom: 17,
-                            //     minZoom: 0,
-                            //     continuousWorld: true,
-                            //     attribution: '(c) CC-BY Kadaster'
-                            // }));
-
                             return map;
 
                         } catch (e) {
                             return false;
                         }
-
-                    // var map = L.map(base.el.id, {
-                    //     zoom: base.startZoom,
-                    //     dragging: base.options.dragging,
-                    //     zoomControl: base.options.zoomControl,
-                    //     scrollWheelZoom: base.options.scrollWheelZoom,
-                    //     doubleClickZoom: base.options.doubleClickZoom,
-                    //     boxZoom: base.options.boxZoom,
-                    //     touchZoom: base.options.touchZoom,
-                    //     keyboard: base.options.keyboardInteraction,
-                    //     trackResize: base.options.trackResize
-                    // });
-
-                    // L.tileLayer(base.tileProviderUrlTemplate, {
-                    //     attribution: base.attribution,
-                    //     maxZoom: base.maxZoom,
-                    //     minZoom: base.minZoom,
-                    //     detectRetina: true
-                    // }).addTo(map);
-
-                    // // add scale to map
-                    // L.control.scale({
-                    //     imperial: false,
-                    //     position:'topright'
-                    // }).addTo(map);
-
-                    // //if(base.options.zoomControl){
-                    // //var zoomControl     = new L.Control.Zoom({ position: 'topright'} ); // default topleft
-                    // //var scaleControl    = new L.Control.Scale({ position: 'bottomleft' });
-                    // //zoomControl.addTo(map);
-                    // //scaleControl.addTo(map);
-                    // //}
-                    // return map;
                 };
-
 
                 /**
                 * Api Interface addLayers to add layers the map, based on their layerkey-names Eg: 'BRT,TOP10NL2,CBS_PROVINCIES'
@@ -708,7 +640,8 @@
                  * @param {int} zoom    zoom level
                  */
                 base._setView = function(latitude,longitude,zoom){
-                    base.map.setView(new L.LatLng(latitude,longitude),zoom);
+                    var loc = new L.LatLng(latitude,longitude);
+                    base.map.setView(loc,zoom);
                 };
 
                 base.getBounds = function(){
@@ -767,13 +700,34 @@
 
                 };
 
+                /**
+                 * zoom into location of client
+                 */
+                base.setCurrentLocation = function (){
+                    function showLocation(position){
+                        var lat = position.coords.latitude;
+                        var lon = position.coords.longitude;
+                        console.log(lat +','+ lon);
+                        L.marker([lat, lon]).addTo(base.map);
+                        base._setView(lat,lon,10);
+
+                        //pointRD = api.reprojectWGS84toRD(lat,lon);
+                        //X = pointRD.lon;
+                        //Y = pointRD.lat;
+                        //api.setLocation([parseInt(X),parseInt(Y)]);
+                        //Parameters voor addMarker functie: mloc,mt,titel,tekst,externalGraphic,pointRadius
+                        //api.addMarker([parseInt(X),parseInt(Y)],2,"Uw locatie","X: " + parseInt(X) + "<BR>Y: " + parseInt(Y));
+                    }
+                    navigator.geolocation.getCurrentPosition(showLocation);
+                };
+
 
                 /**
                  * set the markers on the map layer and zoom the map based on number of markers
                  * @param  {[type]} markers pass base.markerdata.markers
                  * @return none
                  */
-                base._addMarkers = function(markers, map) {
+                base._addMarkers = function(markers) {
                     
                     // {latlng:[lat,lng],title:'markertitle',popuptext:'Interdum et malesuada fames ac ante ipsum'}
                     base.markers = [];
@@ -781,24 +735,22 @@
                     
                     // between 200 and 300 maximum width of map 2*19 is margin in popup + 14px side space
                     var popupOptions = {
-                        minWidth: Math.min(map._container.offsetWidth, 200) ,
-                        maxWidth: Math.min(map._container.offsetWidth-53, 300)
+                        minWidth: Math.min(base.map._container.offsetWidth, 200) ,
+                        maxWidth: Math.min(base.map._container.offsetWidth-53, 300)
                     };
 
                     $.each(markers, function(index, mrk) {
                         var title = mrk.title.replace(/(<([^>]+)>)/ig, '').replace(/^\s+|\s+$/g, '');// strip tags and trailing leading whitespace
                         var lmrk = L.marker(mrk.latlng, {
                             title: title
-                        }).addTo(map);
+                        }).addTo(base.map);
                         base.markers.push(lmrk);
                         base.bounds.push(mrk.latlng);
                         base.markers[index].bindPopup(mrk.popuptext,popupOptions);
                     });
-
-                    //console.log(base.bounds);
                     var latlngBounds = new L.latLngBounds(base.bounds);
 
-                    this.map.fitBounds(latlngBounds, {
+                    base.map.fitBounds(latlngBounds, {
                         padding: new L.point(16, 16)
                     });
 
@@ -806,9 +758,9 @@
                     //multiple points base.startZoom or based on fit points
                     //single point base.startZoom or marker zoom or default
                     if(parseInt(base.options.map.startZoom,10)>-1){
-                        base.setZoomLevel(base.startZoom);
+                        base._setZoomLevel(base.startZoom);
                     } else if (markers.length === 1) {
-                        base.setZoomLevel(markers[0].zoom || base.options.startZoom);
+                        base._setZoomLevel(markers[0].zoom || base.options.startZoom);
                     }
                 };
 
@@ -868,8 +820,8 @@
                  * This function clears map from any attached markers.
                  */
                 base._clearMap = function() {
-                    $.each(this.map.markers, function (key, marker) {
-                        this.map.removeLayer(marker);
+                    $.each(base.map.markers, function (key, marker) {
+                        base.map.removeLayer(marker);
                     });
                 };
 
@@ -879,7 +831,7 @@
                  * @param {integer} zoomlevel the zoomlevel (0 is full map, 14 is fully zoomed in)
                  */
                 base._setZoomLevel = function(zoomlevel) {
-                    this.map.zoomTo(zoomlevel);
+                    base.map.setZoom(zoomlevel);
                     return true;
                 };
 
