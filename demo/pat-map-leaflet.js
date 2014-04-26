@@ -117,6 +117,7 @@
                 scrollWheelZoom: true,
                 doubleClickZoom: true,
                 boxZoom: false,
+                doubleclick:true,
                 touchZoom: true,
                 keyboardInteraction: true,
                 trackResize: true,
@@ -198,6 +199,10 @@
                                     // add click handler
                                     if(base.options.debug){
                                         base.map.on('click', base._onMapClick);
+                                    }
+
+                                    if(base.options.doubleclick){
+                                        base.map.on('doubleClickZoom', function(){base._setZoomLevel(Math.max(base.map.getZoom()+1,base.max.getMaxZoom()));});
                                     }
 
                                     // add focus and blur handlers
@@ -582,6 +587,11 @@
 
                 /**
                  * display layer controls on the map
+                 * setting zindex TODO topLayer.setZIndex(7) or use bringToFront or bringToBack
+                 * The overlay layers will be drawn default on top of the base layers.
+                 * The autoZIndex option, which is by default On, specifies that the control must assign z indices to each 
+                 * of its layers in the order in which they are added, and that means they'll be drawn in that order.
+                 * or use addLayer( <ILayer> layer, <Boolean> insertAtTheBottom? ) when adding layer
                  */
                 base._addLayerControls  = function(){
                     var backgroundMaps = {};
@@ -753,6 +763,7 @@
                         //Parameters voor addMarker functie: mloc,mt,titel,tekst,externalGraphic,pointRadius
                         //api.addMarker([parseInt(X),parseInt(Y)],2,"Uw locatie","X: " + parseInt(X) + "<BR>Y: " + parseInt(Y));
                     }
+                    // or use base.map.setView(true);
                     navigator.geolocation.getCurrentPosition(showLocation);
                 };
 
