@@ -68,13 +68,13 @@
     } else {
         factory(root.jQuery, root.patterns, root.patterns.Parser, root.L,root.proj4,root.L.Proj);
     }
-}(this, function($, patterns, Parser, L, proj4, LProj4 ) {
+}(this, function($, patterns, Parser, L) {
 
     var parser = new Parser('leaflet');
 
     parser.add_argument('config');
     parser.add_argument('layerNames');
-    parser.add_argument('currentLocation');
+    parser.add_argument('location');
 
     //overwrite imagePathFunction to look for path next to csspath not js path
     L.Icon.Default.imagePath = (function() {
@@ -98,10 +98,8 @@
         name: 'patleaflet',
         trigger: '.pat-map-leaflet',
 
-        init: function($el, options) {
-            // http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png
+        init: function($el) {
             
-
             var defaultOptions = {
                 debug: (window.location.hash.indexOf('debug') > -1),
                 id: 'map',
@@ -189,11 +187,10 @@
                                         base._addMarkers(base.markerdata.markers);
                                     }
 
-                                    //base._setView(base.options.map.center[0],base.options.map.center[1],base.options.map.zoom);
-                                    if(base.options.currentLocation){
-                                        base.setCurrentLocation();
+                                    if(base.options.location ==='current'){
+                                        base._setCurrentLocation();
                                     }
-
+                                   
                                     base.map.whenReady(base._onWhenReady);
 
                                     // add click handler
@@ -244,16 +241,8 @@
 
                         // add data to markers array
                         var addDataMarkers = function($el,title,popuptext){
-                            var properties = $el.data('pat-leaflet').split(';');
-                            var propertiesObj = {};
-                            for(var i=0; i< properties.length; i++) {
-                                var tup = properties[i].split(':');
-                                if(tup){propertiesObj[tup[0]] = tup[1];}
-                            }
-
-                            //var object = JSON.parse('{ '+data+'}');
-                            var loc = propertiesObj.location.split(',') ||  base.center;
-                            var zoom = propertiesObj.zoom || base.zoom;
+                            var loc = $el.data('location').split(',') ||  base.center;
+                            var zoom = parseInt($el.data('zoom'),10) || base.zoom;
 
                             //[51.5, -0.09], {title: 'London'}
                             var obj = {
@@ -269,7 +258,7 @@
                         case 'TABLE':
                             $datatable.find('tbody tr').each(function() {
                                 var $this = $(this);
-                                var title = $this.find('th').html();
+                                var title = $this.find('.title').html() || $this.find('th').html();
                                 var popuptext = $this.find('td').html();
                                 addDataMarkers($this,title,popuptext);
                             });
@@ -277,16 +266,16 @@
                         case 'UL':
                             $datatable.find('li').each(function() {
                                 var $this = $(this);
-                                var title = $this.find('a').html() || $this.html();
+                                var title = $this.find('.title').html() || $this.find('a').html() || $this.html();
                                 var popuptext = $this.html();
                                 addDataMarkers($this,title,popuptext);
                             });
                             break;
                         case 'DIV':
-                            // input is selector element with h3, p, img
+                            // input is selector element with div's
                             $datatable.each(function() {
                                 var $this = $(this);
-                                var title = $this.find('h3').html() || $this.find('a').html() || $this.html();
+                                var title = $this.find('.title').html() || $this.find('h2').html() || $this.find('h3').html() || $this.find('h4').html() || $this.find('a').html() || $this.html();
                                 var popuptext = $this.html();
                                 addDataMarkers($this,title,popuptext);
                             });
@@ -355,6 +344,7 @@
                             var transparent = this.getBooleanContent('isTransparent', node);
                             var layerToggle = this.getBooleanContent('layerToggle', node);
                             var layerControl = this.getBooleanContent('layerControl', node);
+                            var isOverlay = this.getBooleanContent('isOverlay', node);
                            
                             var config = {
                                     layerType:layerType,
@@ -398,7 +388,7 @@
                             }
                             //this.addMinMaxResolutions(config, node);
                             this.addMinMaxZoom(config, node);
-                            var layer = {title:title,url:url,layerToggle:layerToggle,layerControl:layerControl,config:config};
+                            var layer = {title:title,url:url,layerToggle:layerToggle,layerControl:layerControl,isOverlay:isOverlay,config:config};
                             result.push(layer);
                         }
                         return result;
@@ -542,18 +532,57 @@
                             var projection = base.options.map.projection; //base.options.contextCollection.find('projection').text();
                             var maxExtent = base.options.map.maxExtent; //base.options.contextCollection.find('maxExtent').text().split(',');
                             var resolutions = base.options.map.resolutions;
-                            var RD = new L.Proj.CRS.TMS(
-                                        projection,
-                                        base.options.PROJ4Projection,
-                                        maxExtent,
-                                        {resolutions: resolutions}
-                                    );
+                            // base._setPosition(base.options.location.split(','));
+                            var center = new L.LatLng(52, 5.3); // center of dutch map default
+                            var zoom = base.options.map.zoom || 2;
+                            var crs = L.CRS.EPSG3857; // default for leaflet most used in online maps
+                            var loc;
+
+                            // get Coordinate Reference System to use
+                            switch (projection) {
+                            case 'EPSG:28992':
+                                crs = new L.Proj.CRS.TMS(
+                                    projection,
+                                    base.options.PROJ4Projection,
+                                    maxExtent,
+                                    {resolutions: resolutions}
+                                );
+                                break;
+                            case 'simple':
+                                crs = L.CRS.Simple;
+                                break;
+                            case 'EPSG4326':
+                                crs = L.CRS.EPSG4326;
+                                break;
+                            }
+
+                            // var RD = new L.Proj.CRS.TMS(
+                            //             projection,
+                            //             base.options.PROJ4Projection,
+                            //             maxExtent,
+                            //             {resolutions: resolutions}
+                            //         );
+
+                            //pass location by current, or by coordinates in de options or in the config file
+                            // if(base.options.location === 'current'){
+                            //     loc = base._getCurrentLocation();
+                            //     if (loc){
+                            //         center = new L.LatLng(loc[0], loc[1]);
+                            //     }
+                            // } else 
+
+                            if (base.options.location && base.options.location.split(',').length === 2){
+                                loc = base.options.location.split(',');
+                            } else if (base.options.map.center && base.options.map.center.length === 2){
+                                loc = base.options.map.center;
+                            }
+                            center = new L.LatLng(loc[0], loc[1]);
 
                             var map = new L.Map('map', {
                                 continuousWorld: true,
-                                crs: RD,
-                                center: new L.LatLng(52, 5.3),
-                                zoom: 2
+                                crs: crs,
+                                center: center,
+                                zoom: zoom
                             });
                             return map;
 
@@ -569,19 +598,20 @@
                 base._addLayers = function(arrLayerNames){
                     for(var i=0,y=arrLayerNames.length;i<y;i++){
                         var layeroptions = arrLayerNames[i];
-
+                        var layer;
 
                         switch(layeroptions.config.layerType){
-                        case 'tmsLayer' :
-                            base._addTMS(layeroptions);
-                            break;
                         case 'wmsLayer' :
-                            base._addWMS(layeroptions);
+                            layer = base._addWMS(layeroptions);
                             break;
                         case 'imageLayer':
-                            base._addImageOverlay(layeroptions);
+                            layer = base._addImageOverlay(layeroptions);
+                            break;
+                        default:
+                            layer = base._addLayer(layeroptions);
                             break;
                         }
+                        //layer.setZIndex(i);
                     }
                 };
 
@@ -594,28 +624,44 @@
                  * or use addLayer( <ILayer> layer, <Boolean> insertAtTheBottom? ) when adding layer
                  */
                 base._addLayerControls  = function(){
-                    var backgroundMaps = {};
-                    var overlayMaps = {};
-                    var layercontrol = 0;
+                    var backgroundMaps,overlayMaps,layergroup;
+                    var baselayercontrol = 0;
+
                     for (var i=0,j=base.layers.length;i<j;i++){
                         var layer = base.layers[i].layer;
                         var title = base.layers[i].title;
                         // check if layer must be included in layer controller
                         if(base.layers[i].layerControl){
-                            layercontrol+=1;
-                            
                             if(layer.options.baselayer){
-                                backgroundMaps[title] = layer;
+                                baselayercontrol+=1;
+                                if(!backgroundMaps){
+                                    backgroundMaps={};
+                                }
+                                layergroup = backgroundMaps;
                             }
                             else {
-                                overlayMaps[title] = layer;
+                                if(!overlayMaps){
+                                    overlayMaps={};
+                                }
+                                layergroup = overlayMaps || {};
                             }
+
+                            layergroup[title] = layer;
+                            // zindex
+                            // if(!layer.options.isOverlay){
+                            //     layer.bringToBack();
+                            // }
                         }
                     }
-                    // only show layer control if there is something to control
-                    if(layercontrol>1){
-                        L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
+                   
+                    //if(baselayercontrol>1 || overlayMaps ){
+                        // only show base layer radio buttons control if there is something to control
+                    if(baselayercontrol === 1 ){
+                        backgroundMaps = null;
                     }
+                    //L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
+                    L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
+                    //}
                 };
 
                 /**
@@ -687,7 +733,7 @@
                 /**
                  * Add Tile map service on the map - TMS delivers tiles
                  */
-                base._addTMS = function(layerOptions){
+                base._addLayer = function(layerOptions){
                     //base.map.addLayer(new L.TileLayer(layerOptions.url, layerOptions.config));
 
                     //create layer
@@ -695,7 +741,6 @@
                     base._setLayer(LLayer,layerOptions);
                     
                     // only add isVisible layer the rest in under the controls
-                    
                     if(layerOptions.config.visibility){
                         base.map.addLayer(LLayer);
                     }
@@ -710,7 +755,7 @@
                     base._setLayer(LLayer,layerOptions);
 
                     //if(layerOptions.config.visibility){
-                        base.map.addLayer(LLayer);
+                    base.map.addLayer(LLayer);
                     //}
 
                     if(base.options.hasLayerToggle && layerOptions.layerToggle){
@@ -722,7 +767,7 @@
                  * This function puts the flood layer on the map.
                  */
                 base._addImageOverlay = function (layerOptions) {
-                    console.log(base.getBounds());
+                    //console.log(base.getBounds());
 
                     // example
                     var map_object = {
@@ -746,27 +791,53 @@
                 };
 
                 /**
-                 * zoom into location of client
+                 * detect map focussing
+                 * @param  {array} point array with lat and long
                  */
-                base.setCurrentLocation = function (){
+                base._setPosition = function(latlong) {
+                    base.map.center(latlong);
+                };
+
+
+                // /**
+                //  * zoom into location of client
+                //  */
+                // base._setCurrentLocation = function (){
+                //     var loc =  base._getCurrentLocation();
+                //     if (loc){
+                //         L.marker(loc).addTo(base.map);
+                //         base._setView(loc[0],loc[1],10);
+                //     }
+                // };
+                /**
+                 * set the current location of the user by the geolocation object
+                 * @return {[array]} location in lat, lon coordinates
+                 */
+                base._setCurrentLocation = function (){
                     function showLocation(position){
                         var lat = position.coords.latitude;
                         var lon = position.coords.longitude;
                         console.log(lat +','+ lon);
+                        
                         L.marker([lat, lon]).addTo(base.map);
                         base._setView(lat,lon,10);
 
-                        //pointRD = api.reprojectWGS84toRD(lat,lon);
-                        //X = pointRD.lon;
-                        //Y = pointRD.lat;
-                        //api.setLocation([parseInt(X),parseInt(Y)]);
-                        //Parameters voor addMarker functie: mloc,mt,titel,tekst,externalGraphic,pointRadius
-                        //api.addMarker([parseInt(X),parseInt(Y)],2,"Uw locatie","X: " + parseInt(X) + "<BR>Y: " + parseInt(Y));
+                        return [lat,lon];
                     }
-                    // or use base.map.setView(true);
-                    navigator.geolocation.getCurrentPosition(showLocation);
+                    function errorHandler(err) {
+                        if(err.code === 1) {
+                            console.log('Error: Access is denied!');
+                        } else if( err.code === 2) {
+                            console.log('Error: Position is unavailable!');
+                        }
+                        return false;
+                    }
+                    if(navigator.geolocation){
+                        // timeout at 60000 milliseconds (60 seconds)
+                        //var options = {timeout:60000};
+                        navigator.geolocation.getCurrentPosition(showLocation, errorHandler);
+                    }
                 };
-
 
                 /**
                  * set the markers on the map layer and zoom the map based on number of markers

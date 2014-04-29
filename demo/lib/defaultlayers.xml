@@ -22,7 +22,7 @@
       <layername>brtachtergrondkaart@EPSG:28992@png</layername>
       <attribution>(c) CC-BY Kadaster</attribution>
       <layerToggle>false</layerToggle>
-      <layerControl>true</layerControl>
+      <layerControl>false</layerControl>
       <isAlpha>true</isAlpha>
       <isTransparent>true</isTransparent>
     </tmsLayer>
@@ -41,7 +41,7 @@
       <isAlpha>true</isAlpha>
       <attribution>(c) CC-BY Kadaster</attribution>
       <layerToggle>false</layerToggle>
-      <layerControl>true</layerControl>
+      <layerControl>false</layerControl>
     </tmsLayer>
     <tmsLayer>
       <title>Luchtfoto [tms]</title>
@@ -57,7 +57,7 @@
       <type>jpeg</type>
       <attribution>(c) CC-BY-NC</attribution>
       <layerToggle>false</layerToggle>
-      <layerControl>true</layerControl>
+      <layerControl>false</layerControl>
     </tmsLayer>
   </context>
   <contextFolder>
@@ -76,8 +76,9 @@
         <featureInfoFormat>application/vnd.ogc.gml</featureInfoFormat>
         <isAlpha>true</isAlpha>
         <isSingleTile>true</isSingleTile>
-        <layerToggle>true</layerToggle>
-        <layerControl>false</layerControl>
+        <layerToggle>false</layerToggle>
+        <layerControl>true</layerControl>
+        <isOverlay>false</isOverlay>
       </wmsLayer>
       <wmsLayer>
         <title>AHN2 0.5m ruw [wms]</title>
@@ -92,8 +93,9 @@
         <featureInfoFormat>application/vnd.ogc.gml</featureInfoFormat>
         <isAlpha>true</isAlpha>
         <isSingleTile>true</isSingleTile>
-        <layerToggle>true</layerToggle>
-        <layerControl>false</layerControl>
+        <layerToggle>false</layerToggle>
+        <layerControl>true</layerControl>
+        <isOverlay>false</isOverlay>
       </wmsLayer>
       <wmsLayer>
         <title>AHN1 100m [wms]</title>
@@ -108,8 +110,9 @@
         <isSingleTile>true</isSingleTile>
         <maxResolution>860.160</maxResolution>
         <minResolution>0.42</minResolution>
-        <layerToggle>true</layerToggle>
-        <layerControl>false</layerControl>
+        <layerToggle>false</layerToggle>
+        <layerControl>true</layerControl>
+        <isOverlay>false</isOverlay>
       </wmsLayer>
       <imageLayer>
         <title>Overstromingsgevaar Nederland</title>
@@ -122,8 +125,9 @@
         <isSingleTile>true</isSingleTile>
         <maxResolution>860.160</maxResolution>
         <minResolution>0.42</minResolution>
-        <layerToggle>true</layerToggle>
-        <layerControl>false</layerControl>
+        <layerToggle>false</layerToggle>
+        <layerControl>true</layerControl>
+        <isOverlay>true</isOverlay>
       </imageLayer>
     </context>
   </contextFolder>
