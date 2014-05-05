@@ -2,123 +2,123 @@
 <html>
 
 <head>
-    <meta charset=utf-8/>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <title>Demo</title>
-    <link rel="stylesheet" href="http://www.patternslib.com/style/common.css" type="text/css">
-    <link rel="stylesheet" href="css/leaflet.css" type="text/css">
-    <style>
-    .ui-control {
-        position: absolute;
-        top: 75px;
-        left: 10px;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        z-index: 100;
-    }
+	<meta charset=utf-8/>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<title>Demo</title>
+	<link rel="stylesheet" href="http://www.patternslib.com/style/common.css" type="text/css">
+	<link rel="stylesheet" href="css/leaflet.css" type="text/css">
+	<style>
+	.ui-control {
+		position: absolute;
+		top: 75px;
+		left: 10px;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		z-index: 100;
+	}
 
-    .ui-control a {
-        font: normal 13px/18px 'Helvetica Neue', Helvetica, sans-serif;
-        background: #FFF;
-        color: #3C4E5A;
-        display: block;
-        margin: 0;
-        padding: 0;
-        border: 1px solid #BBB;
-        border-bottom-width: 0;
-        min-width: 138px;
-        padding: 10px;
-        text-decoration: none;
-    }
+	.ui-control a {
+		font: normal 13px/18px 'Helvetica Neue', Helvetica, sans-serif;
+		background: #FFF;
+		color: #3C4E5A;
+		display: block;
+		margin: 0;
+		padding: 0;
+		border: 1px solid #BBB;
+		border-bottom-width: 0;
+		min-width: 138px;
+		padding: 10px;
+		text-decoration: none;
+	}
 
-    .ui-control a:hover {
-        background: #ECF5FA;
-    }
+	.ui-control a:hover {
+		background: #ECF5FA;
+	}
 
-    .ui-control li:last-child a {
-        border-bottom-width: 1px;
-        -webkit-border-radius: 0 0 3px 3px;
-        border-radius: 0 0 3px 3px;
-    }
+	.ui-control li:last-child a {
+		border-bottom-width: 1px;
+		-webkit-border-radius: 0 0 3px 3px;
+		border-radius: 0 0 3px 3px;
+	}
 
-    .ui-control li:first-child a {
-        -webkit-border-radius: 3px 3px 0 0;
-        border-radius: 3px 3px 0 0;
-    }
+	.ui-control li:first-child a {
+		-webkit-border-radius: 3px 3px 0 0;
+		border-radius: 3px 3px 0 0;
+	}
 
-    .ui-control a.active{
-        background: #3887BE;
-        border-color: #3887BE;
-        border-top-color: #FFF;
-        color: #FFF;
-    }
-    </style>
+	.ui-control a.active{
+		background: #3887BE;
+		border-color: #3887BE;
+		border-top-color: #FFF;
+		color: #FFF;
+	}
+	</style>
 </head>
 
 <body>
-    <section>
-        <h1>Leaflet</h1>
-        <section class="description">
-            <a href="documentation.md" class="pat-inject" data-pat-inject="source: ## Description::element; target: self::element; trigger: autoload">Description</a>
-        </section>
+	<section>
+		<h1>Leaflet</h1>
+		<section class="description">
+			<a href="documentation.md" class="pat-inject" data-pat-inject="source: ## Description::element; target: self::element; trigger: autoload">Description</a>
+		</section>
 
-        <section class="demo">
-            <h2>Demo</h2>
-            <!-- url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ; -->
-             <div id="map" class="pat-map-leaflet" data-pat-leaflet="config:lib/defaultlayers.xml; layerNames:Overstromingsgevaar Nederland,BRT achtergrondkaart [tms];location:current;">
-                <div class="maplocation" data-location="51.948009,4.8437067" data-zoom="6">
-                    <h3>2871 GA Schoonhoven, Nederland</h3>
-                    <p>
-                        Overstromingsrisico: meer dan 5 meter.
-                    </p>
-                </div>
-                <div class="legend"></div>
-                <ul class="ui-control"></ul>
-            </div>
-            <div class="item card width-1" id="waterhoogte-in-omgeving">
-                <h2>Waterhoogte in jouw omgeving</h2>
-                <div>
-                    <p>Deze kaart laat de maximale waterdiepte in de omgeving van de ingegeven postcode zien, die optreedt door een overstroming.</p>
-                </div>
+		<section class="demo">
+			<h2>Demo</h2>
+			<!-- url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ; -->
+			 <div id="map" class="pat-map-leaflet" data-pat-leaflet="config:lib/defaultlayers.xml;layerNames:Waterhoogte,BRT achtergrondkaart [tms];">
+				<div class="maplocation" data-location="52.37575492751965,4.890796430620804" data-zoom="5">
+					<h3>1012 VH Amsterdam, Nederland</h3>
+					<p>
+						Overstromingsrisico: minder dan 1 meter.
+					</p>
+				</div>
+				<div class="legend"></div>
+				<ul class="ui-control"></ul>
+			</div>
+			<div class="item card width-1" id="waterhoogte-in-omgeving">
+				<h2>Waterhoogte in jouw omgeving</h2>
+				<div>
+					<p>Deze kaart laat de maximale waterdiepte in de omgeving van de ingegeven postcode zien, die optreedt door een overstroming.</p>
+				</div>
 
-                <div class="content">
-                    <p>Bekijk de maximale waterhoogte in jouw omgeving bij een overstroming.</p>
-                    <!-- <p>Op de kaart van Nederland ziet u de maximale waterdiepte door een overstroming. 
-                        We tonen de hoogste waterstand die kan optreden op elke locatie. 
-                        De informatie is afkomstig van vele overstromingsscenario's met verschillende gevolgen. 
-                        Voor deze scenario's is publieke informatie aangevuld met extra analyses.
-                        In buitendijkse gebieden is gebruik gemaakt van maatgevende hoogwaterstanden en de hoogte van het maaiveld. 
-                        In gebieden beschermd door dijken en duinen is de maximale waterstand getoond na een doorbraak uit zee, rivier of de boezem. Hiervoor hebben we gebruik gemaakt van de nationale overstromingsrisicokaart en van de ergst denkbare overstromingsscenario's.#Voor gebieden waar nog geen overstromingsscenario's beschikbaar zijn, hebben we een inschatting gemaakt op basis van de maaiveldhoogte. 
-                        Ook hebben we gekeken naar de gevolgen van doorbraken van regionale waterkeringen.
-                        Bij grote veranderingen in een gebied kunnen de gevolgen veranderen. 
-                        Het is dan ook mogelijk dat onderliggende scenario's worden geactualiseerd.</p> -->
-                    <form action="views/postcoderespons.html#map::element" class="pat-inject">
-                        <fieldset>
-                            <input class="postal-code" type="text" size="16" placeholder="Vul je postcode in">
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-        </section>
+				<div class="content">
+					<p>Bekijk de maximale waterhoogte in jouw omgeving bij een overstroming.</p>
+					<!-- <p>Op de kaart van Nederland ziet u de maximale waterdiepte door een overstroming. 
+						We tonen de hoogste waterstand die kan optreden op elke locatie. 
+						De informatie is afkomstig van vele overstromingsscenario's met verschillende gevolgen. 
+						Voor deze scenario's is publieke informatie aangevuld met extra analyses.
+						In buitendijkse gebieden is gebruik gemaakt van maatgevende hoogwaterstanden en de hoogte van het maaiveld. 
+						In gebieden beschermd door dijken en duinen is de maximale waterstand getoond na een doorbraak uit zee, rivier of de boezem. Hiervoor hebben we gebruik gemaakt van de nationale overstromingsrisicokaart en van de ergst denkbare overstromingsscenario's.#Voor gebieden waar nog geen overstromingsscenario's beschikbaar zijn, hebben we een inschatting gemaakt op basis van de maaiveldhoogte. 
+						Ook hebben we gekeken naar de gevolgen van doorbraken van regionale waterkeringen.
+						Bij grote veranderingen in een gebied kunnen de gevolgen veranderen. 
+						Het is dan ook mogelijk dat onderliggende scenario's worden geactualiseerd.</p> -->
+					<form action="views/postcoderespons.html#map::element" class="pat-inject">
+						<fieldset>
+							<input class="postal-code" type="text" size="16" placeholder="Vul je postcode in">
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</section>
 
-        <section class="documentation">
-            <a href="documentation.md" class="pat-inject" data-pat-inject="source: ## Documentation::element; target: self::element; trigger: autoload">Documentation</a>
-        </section>
-    </section>
+		<section class="documentation">
+			<a href="documentation.md" class="pat-inject" data-pat-inject="source: ## Documentation::element; target: self::element; trigger: autoload">Documentation</a>
+		</section>
+	</section>
 
-    <script data-main="main" src="../src/bower_components/requirejs/require.js"></script>
-    <!-- 
-    <script>
-        // $(document).on("pat-inject-content-loaded", "#in-geval-van-nood", function() {
-         //     alert($(this).text());
-         //     // content loaded only for images
-         // });
-        $('#waterhoogte-in-omgeving').on("pat-ajax-success.loaded-waterhoogte", function() {
-            alert('loaded waterhoogte');
-        });
-    </script>
+	<script data-main="main" src="../src/bower_components/requirejs/require.js"></script>
+	<!-- 
+	<script>
+		// $(document).on("pat-inject-content-loaded", "#in-geval-van-nood", function() {
+		 //     alert($(this).text());
+		 //     // content loaded only for images
+		 // });
+		$('#waterhoogte-in-omgeving').on("pat-ajax-success.loaded-waterhoogte", function() {
+			alert('loaded waterhoogte');
+		});
+	</script>
  -->
 </body>
 
