@@ -1,3 +1,4 @@
+// @codekit-prepend "lib/leaflet.js","lib/proj4js-compressed.js","lib/proj4leaflet.js"
 // jshint indent: 4, browser: true, jquery: true, quotmark: false, camelcase: false, eqnull:true
 // vim: sw=4 expandtab
 /* global  define */

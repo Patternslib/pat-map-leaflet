@@ -16,7 +16,7 @@
       <isVisible>true</isVisible>
       <opacity>1.0</opacity>
       <type>png</type>
-      <maxResolution>860.160</maxResolution>
+      <maxResolution>1720.320</maxResolution>
       <minResolution>0.21</minResolution>
       <isSingleTile>false</isSingleTile>
       <layername>brtachtergrondkaart@EPSG:28992@png</layername>
@@ -78,7 +78,6 @@
         <isSingleTile>true</isSingleTile>
         <layerToggle>false</layerToggle>
         <layerControl>true</layerControl>
-        <isOverlay>false</isOverlay>
       </wmsLayer>
       <wmsLayer>
         <title>AHN2 0.5m ruw [wms]</title>
@@ -95,7 +94,6 @@
         <isSingleTile>true</isSingleTile>
         <layerToggle>false</layerToggle>
         <layerControl>true</layerControl>
-        <isOverlay>false</isOverlay>
       </wmsLayer>
       <wmsLayer>
         <title>AHN1 100m [wms]</title>
@@ -112,7 +110,19 @@
         <minResolution>0.42</minResolution>
         <layerToggle>false</layerToggle>
         <layerControl>true</layerControl>
-        <isOverlay>false</isOverlay>
+      </wmsLayer>
+      <wmsLayer>
+        <title>Provinciegrenzen [wms]</title>
+        <url>{baseUrl}bestuurlijkegrenzen/wms?</url>
+        <isBaseLayer>false</isBaseLayer>
+        <opacity>1.0</opacity>
+        <isTransparent>true</isTransparent>
+        <isVisible>false</isVisible>
+        <layers>provincies</layers>
+        <format>image/png</format>
+        <featureInfoFormat>application/vnd.ogc.gml</featureInfoFormat>
+        <isAlpha>true</isAlpha>
+        <isSingleTile>true</isSingleTile>
       </wmsLayer>
       <imageLayer>
         <title>Overstromingsgevaar Nederland</title>
@@ -127,7 +137,6 @@
         <minResolution>0.42</minResolution>
         <layerToggle>false</layerToggle>
         <layerControl>true</layerControl>
-        <isOverlay>true</isOverlay>
       </imageLayer>
     </context>
   </contextFolder>
