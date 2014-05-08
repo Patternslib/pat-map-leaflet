@@ -126,6 +126,21 @@
         <layerToggle>false</layerToggle>
         <layerControl>true</layerControl>
       </wmsLayer>
+      <wmsLayer>
+        <title>Maximale waterdiepte</title>
+        <url>http://5.79.71.80:8081/geoserver/MEGO/wms??</url>
+        <isBaseLayer>false</isBaseLayer>
+        <opacity>1.0</opacity>
+        <isTransparent>true</isTransparent>
+        <isVisible>true</isVisible>
+        <layers>Maximale waterdiepte</layers>
+        <format>image/png</format>
+        <featureInfoFormat>application/openlayers</featureInfoFormat>
+        <isAlpha>true</isAlpha>
+        <isSingleTile>true</isSingleTile>
+        <layerToggle>false</layerToggle>
+        <layerControl>true</layerControl>
+      </wmsLayer>
       <imageLayer>
         <title>Overstromingsgevaar Nederland</title>
         <url>images/map/water_levels.png</url>

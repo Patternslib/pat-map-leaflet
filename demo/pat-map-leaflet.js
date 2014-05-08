@@ -1,4 +1,4 @@
-// jshint indent: 4, browser: true, jquery: true, quotmark: false, camelcase: false, eqnull:true
+// jshint indent: 4, browser: true, jquery: true, quotmark: false, camelcase: false, eqnull:true, strict:false
 // vim: sw=4 expandtab
 /* global  define */
 
