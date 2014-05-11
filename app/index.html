@@ -2,81 +2,58 @@
 <html>
 
 <head>
-    <meta charset=utf-8/>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <title>Demo</title>
-    <link rel="stylesheet" href="http://www.patternslib.com/style/common.css" type="text/css">
-    <link rel="stylesheet" href="css/leaflet.css" type="text/css">
+	<meta charset=utf-8/>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<title>Demo</title>
+	<link rel="stylesheet" href="css/leaflet.css" type="text/css">
+	<style>
+		.ui-control {
+			position: absolute;
+			top: 75px;
+			left: 10px;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			z-index: 100;
+		}
+		.ui-control a {
+			font: normal 13px/18px'Helvetica Neue', Helvetica, sans-serif;
+			background: #FFF;
+			color: #3C4E5A;
+			display: block;
+			margin: 0;
+			padding: 0;
+			border: 1px solid #BBB;
+			border-bottom-width: 0;
+			min-width: 138px;
+			padding: 10px;
+			text-decoration: none;
+		}
+		.ui-control a:hover {
+			background: #ECF5FA;
+		}
+		.ui-control li:last-child a {
+			border-bottom-width: 1px;
+			-webkit-border-radius: 0 0 3px 3px;
+			border-radius: 0 0 3px 3px;
+		}
+		.ui-control li:first-child a {
+			-webkit-border-radius: 3px 3px 0 0;
+			border-radius: 3px 3px 0 0;
+		}
+		.ui-control a.active {
+			background: #3887BE;
+			border-color: #3887BE;
+			border-top-color: #FFF;
+			color: #FFF;
+		}
+		
+	</style>
 </head>
 
 <body>
-    <section>
-        <h1>Leaflet</h1>
-        <section class="description">
-            <a href="documentation.md" class="pat-inject" data-pat-inject="source: ## Description::element; target: self::element; trigger: autoload">Description</a>
-        </section>
-
-        <section class="demo">
-            <h2>Demo</h2>
-             <div id="map" class="pat-map-leaflet" data-pat-leaflet="url: 'http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png' ;
-                                                  attribution: Kaartgegevens: © <a href='http://www.cbs.nl'>CBS</a>, <a href='http://www.kadaster.nl'>Kadaster</a>, <a href='http://openstreetmap.org'>OpenStreetMap</a>. ;
-                                                  max-zoom: 12;
-                                                  start-zoom: 7;
-                                                  min-zoom: 1;
-                                                  api-key: Fmjtd%7Cluub20uy2q%2Caw%3Do5-9urlq0;
-                                                  alt-text: Waterhoogte aanduiding in nederland;">
-
-                <div class="maplocation" data-location="52.080956570675866, 4.306919574737549">
-                    <h3>Zuid-Beveland</h3>
-                    <p>
-                        Overstromingskans: groter dan 1 op 100 per jaar
-                    </p>
-                    <p>
-                        Verwacht aantal slachtoffers: 10 per jaar
-                    </p>
-                    <p>
-                        Verwachte schade: &euro;38.000.000,- per jaar
-                    </p>
-                </div>
-            </div>
-
-            <div class="item card width-1" id="waterhoogte-in-omgeving">
-                <h2>Waterhoogte in jouw omgeving</h2>
-
-                <div class="content">
-                    <p>Bekijk de maximale waterhoogte in jouw omgeving bij een overstroming.</p>
-                    <form action="scripts/views/postcoderespons.html#map" class="pat-inject">
-                        <fieldset>
-                            <input class="postal-code" type="text" size="16" placeholder="Vul je postcode in">
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-        </section>
-
-        <section class="documentation">
-            <a href="documentation.md" class="pat-inject" data-pat-inject="source: ## Documentation::element; target: self::element; trigger: autoload">Documentation</a>
-        </section>
-    </section>
-
-     <script src="scripts/bundle.js"></script>
-    <!--
-    <script src="scripts/patterns.js"></script>
-     -->
-    <script>
-        // $(document).on("pat-inject-content-loaded", "#in-geval-van-nood", function() {
-         //     alert($(this).text());
-         //     // content loaded only for images
-         // });
-        $('#waterhoogte-in-omgeving').on("pat-ajax-success.loaded-waterhoogte", function() {
-            alert('loaded waterhoogte');
-        });
-    </script>
-    <!-- <script data-main="scripts/main.js" src="scripts/vendor/requirejs/require.js"></script> -->
-
-    <script src="scripts/mainpattern.min.js"></script>
-
+	<div id="map" class="pat-map-leaflet" data-pat-leaflet="config:data/defaultlayers.xml; layerNames:BRT achtergrondkaart [tms],Maximale waterhoogte;"></div>
+	<script data-main="scripts/main" src="../src/bower_components/requirejs/require.js"></script>
 </body>
-
 </html>
