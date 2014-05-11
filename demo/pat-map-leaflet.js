@@ -657,14 +657,13 @@
                         }
                     }
                    
-                    //if(baselayercontrol>1 || overlayMaps ){
+                    if(baselayercontrol>1 || overlayMaps ){
                         // only show base layer radio buttons control if there is something to control
-                    if(baselayercontrol === 1 ){
-                        backgroundMaps = null;
+                        if(baselayercontrol === 1 ){
+                            backgroundMaps = null;
+                        }
+                        L.control.layers(backgroundMaps, overlayMaps,{position: 'bottomleft'}).addTo(base.map);
                     }
-                    //L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
-                    L.control.layers(backgroundMaps, overlayMaps).addTo(base.map);
-                    //}
                 };
 
                 /**
