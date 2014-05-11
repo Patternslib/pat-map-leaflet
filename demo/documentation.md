@@ -2,7 +2,7 @@
 
 ## Description
 
-With the pat-mapleaflet plugin you can create a leaflet map based on structured html with a pat-map-leaflet attribute and as input a xml configuration file 
+With the pat-mapleaflet plugin you can create a leaflet map based on structured html with a pat-map-leaflet attribute and as input an xml configuration file 
 
 ## Documentation
 
